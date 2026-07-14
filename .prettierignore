@@ -1,0 +1,8 @@
+dist
+coverage
+node_modules
+public/mockServiceWorker.js
+wiki
+
+# Markdown autorado (CLAUDE.md, README) — não reformatar
+*.md

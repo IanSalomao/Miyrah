@@ -1,0 +1,153 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import './styles/fonts.css';
+
+/* Variante dark declarada para os componentes shadcn compilarem `dark:*`,
+   mas o tema é único e claro (design_system.md só define a paleta "Papel"):
+   nenhuma classe .dark é aplicada em lugar algum. */
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Tipografia (design_system.md) */
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bitter', ui-serif, Georgia, serif;
+  --font-heading: var(--font-display);
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* Cores base shadcn → tokens Church Flow */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Semânticos financeiros — Entradas/Saídas (nunca são cor de categoria) */
+  --color-income: var(--income);
+  --color-income-foreground: var(--income-foreground);
+  --color-expense: var(--expense);
+  --color-expense-foreground: var(--expense-foreground);
+
+  /* Gráficos: fallback. Pizzas usam a cor da categoria (dado do usuário). */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  /* Raio discreto — estética de livro-caixa, não SaaS arredondado */
+  --radius: 0.375rem;
+
+  /* Tokens de marca (hex vindos direto de wiki/design_system.md) */
+  --papel: #eef1e7;
+  --tinta: #202b22;
+  --contas: #2b5c4f;
+  --linha: #c9d0c1;
+  --entradas: #1e7a46;
+  --saidas: #a6342a;
+
+  /* Papel → fundo; Tinta → texto */
+  --background: var(--papel);
+  --foreground: var(--tinta);
+  --card: var(--papel);
+  --card-foreground: var(--tinta);
+  --popover: var(--papel);
+  --popover-foreground: var(--tinta);
+
+  /* Contas → accent de interação (primary) */
+  --primary: var(--contas);
+  --primary-foreground: var(--papel);
+
+  /* Neutros de apoio derivados do Papel/Linha */
+  --secondary: #e1e6d9;
+  --secondary-foreground: var(--tinta);
+  --muted: #e1e6d9;
+  --muted-foreground: #4e5a50; /* Tinta dessaturada — texto secundário, AA sobre Papel */
+  --accent: #dee4d6; /* fundo de hover */
+  --accent-foreground: var(--tinta);
+
+  /* Saídas → cor destrutiva (excluir etc.) */
+  --destructive: var(--saidas);
+  --destructive-foreground: var(--papel);
+
+  /* Linha → bordas e réguas finas */
+  --border: var(--linha);
+  --input: var(--linha);
+  --ring: var(--contas); /* foco */
+
+  /* Semânticos financeiros */
+  --income: var(--entradas);
+  --income-foreground: var(--papel);
+  --expense: var(--saidas);
+  --expense-foreground: var(--papel);
+
+  /* Gráficos (fallback) */
+  --chart-1: var(--entradas);
+  --chart-2: var(--saidas);
+  --chart-3: var(--contas);
+  --chart-4: #b08a3e;
+  --chart-5: #5b6a7d;
+
+  /* Sidebar */
+  --sidebar: #eaeee1;
+  --sidebar-foreground: var(--tinta);
+  --sidebar-primary: var(--contas);
+  --sidebar-primary-foreground: var(--papel);
+  --sidebar-accent: #dee4d6;
+  --sidebar-accent-foreground: var(--tinta);
+  --sidebar-border: var(--linha);
+  --sidebar-ring: var(--contas);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  /* Títulos em Bitter (display) */
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+  /* IBM Plex Mono com tabular figures em todo valor numérico */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+}

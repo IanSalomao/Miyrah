@@ -1,0 +1,10 @@
+// Barrel dos tipos da API.
+export type * from './api'
+export type * from './auth'
+export type * from './church'
+export type * from './member'
+export type * from './category'
+export type * from './ministry'
+export type * from './transaction'
+export type * from './dashboard'
+export type * from './report'

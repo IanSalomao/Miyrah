@@ -1,0 +1,18 @@
+/* Fontes self-hosted (@fontsource) — ver wiki/design_system.md
+   - Bitter (slab serif): títulos/display
+   - Inter (variável): corpo
+   - IBM Plex Mono: valores monetários e numéricos (tabular figures) */
+
+/* Inter — corpo (variável) */
+@import '@fontsource-variable/inter';
+
+/* Bitter — display/títulos */
+@import '@fontsource/bitter/400.css';
+@import '@fontsource/bitter/500.css';
+@import '@fontsource/bitter/600.css';
+@import '@fontsource/bitter/700.css';
+
+/* IBM Plex Mono — dados/valores */
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
