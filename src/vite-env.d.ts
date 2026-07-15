@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  /** URL da API real. Quando ausente, o app usa `/v1` (interceptado pelo MSW em dev). */
+  /** URL base da API. Quando ausente, o app usa `/v1`. */
   readonly VITE_API_URL?: string
 }
 

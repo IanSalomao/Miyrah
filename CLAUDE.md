@@ -6,7 +6,7 @@ Este arquivo orienta o Claude Code (claude.ai/code) ao trabalhar neste repositó
 
 O **Church Flow (ChF)** é um sistema de gestão financeira para igrejas — controle de entradas e saídas de forma eficiente, clara e auditável. Ele resolve deliberadamente **um único problema** (controle financeiro), ao contrário dos ChMS genéricos que tentam fazer tudo. Cada conta do sistema é uma igreja (multi-tenant por conta).
 
-Este repositório contém **apenas o front-end**. O back-end (NestJS + PostgreSQL) viverá em repositório separado e **ainda não existe** — durante o desenvolvimento, a API é mockada com MSW seguindo o contrato já documentado na wiki.
+Este repositório contém **apenas o front-end**. O back-end (NestJS + PostgreSQL) vive em repositório separado e já está majoritariamente disponível — o front consome a API real (`VITE_API_URL`), seguindo o contrato documentado na wiki e os tipos gerados em `src/types/api-types.d.ts`.
 
 ## Fonte da verdade: `wiki/`
 
@@ -40,7 +40,6 @@ Regras:
 | Formulários        | React Hook Form + Zod                              | Integrados via `<Form>` do shadcn/ui; schemas Zod reutilizáveis                              |
 | Gráficos           | Recharts                                           | Via componentes de chart do shadcn/ui                                                        |
 | HTTP               | `fetch` nativo + wrapper (`src/lib/api-client.ts`) | Sem axios/ky                                                                                 |
-| Mock de API        | MSW (Mock Service Worker)                          | Espelha `wiki/api/*` na camada de rede                                                       |
 | Testes             | Vitest + Testing Library                           | Sem E2E no MVP                                                                               |
 | Qualidade          | ESLint + Prettier                                  |                                                                                              |
 | Pacotes            | npm                                                | Não usar pnpm/yarn/bun                                                                       |
@@ -48,7 +47,7 @@ Regras:
 ## Comandos
 
 ```bash
-npm run dev      # servidor de desenvolvimento (MSW ativo)
+npm run dev      # servidor de desenvolvimento (consome a API via VITE_API_URL)
 npm run build    # tsc -b && vite build
 npm run test     # vitest
 npm run lint     # eslint
@@ -80,8 +79,7 @@ src/
 │  ├─ categories/
 │  ├─ reports/
 │  └─ settings/
-├─ lib/            # api-client.ts, format.ts (moeda/data), utils
-└─ mocks/          # handlers MSW, um arquivo por domínio de wiki/api/
+└─ lib/            # api-client.ts, format.ts (moeda/data), utils
 ```
 
 Mapeamento wiki → código: `page_transactions.md` → `src/features/transactions/` + rota `/transactions`; `component_side_bar.md` → `src/components/side-bar/`. Os nomes em inglês da wiki **são** os nomes reais do projeto.
@@ -135,12 +133,6 @@ Rotas: `/login`, `/register`, `/forgot-password`, `/reset-password` (públicas, 
 - Não existe endpoint de logout — logout é descartar o token no cliente.
 - Resposta `401` em qualquer chamada → limpar sessão e redirecionar para `/login`.
 - Rotas protegidas por guard de autenticação. O `churchId` vem sempre do token — nunca em URL ou corpo de requisição.
-
-### Mocks (MSW)
-
-- Um arquivo de handlers por domínio, espelhando 1:1 os endpoints de `wiki/api/*` — mesmo envelope, mesmos códigos de erro, mesma paginação.
-- Seed de dados realista em pt-BR (nomes de membros, ministérios e categorias típicos de igreja brasileira).
-- MSW ativo apenas em dev e testes; `VITE_API_URL` definirá a API real quando o back existir.
 
 ### Testes
 
