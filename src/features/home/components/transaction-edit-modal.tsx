@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronsUpDown } from 'lucide-react'
-import { ModalForm } from '@/components/modal-form/modal-form'
+import { FormDrawer } from '@/components/modal-form/form-drawer'
 import { Field, FieldLabel, FieldError } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -159,7 +159,7 @@ export function TransactionEditModal({
   }
 
   return (
-    <ModalForm
+    <FormDrawer
       open={open}
       onOpenChange={onOpenChange}
       title="Editar transação"
@@ -342,6 +342,6 @@ export function TransactionEditModal({
           )}
         />
       </Field>
-    </ModalForm>
+    </FormDrawer>
   )
 }

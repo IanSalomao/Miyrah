@@ -15,7 +15,7 @@ export interface MinistryCardProps {
 
 export function MinistryCard({ ministry, onEdit, onDelete }: MinistryCardProps) {
   return (
-    <div className="group relative flex flex-col gap-3 rounded-lg border border-border bg-card p-5 shadow-none">
+    <div className="group relative flex flex-col gap-3 rounded-lg border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
       <div className="absolute top-3 right-3 flex gap-1 opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
         <Button
           type="button"

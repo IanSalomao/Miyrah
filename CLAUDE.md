@@ -4,17 +4,17 @@ Este arquivo orienta o Claude Code (claude.ai/code) ao trabalhar neste repositó
 
 ## Sobre o projeto
 
-O **Church Flow (ChF)** é um sistema de gestão financeira para igrejas — controle de entradas e saídas de forma eficiente, clara e auditável. Ele resolve deliberadamente **um único problema** (controle financeiro), ao contrário dos ChMS genéricos que tentam fazer tudo. Cada conta do sistema é uma igreja (multi-tenant por conta).
+O **Miyrah ** é um sistema de gestão financeira para igrejas — controle de entradas e saídas de forma eficiente, clara e auditável. Ele resolve deliberadamente **um único problema** (controle financeiro), ao contrário dos ChMS genéricos que tentam fazer tudo. Cada conta do sistema é uma igreja (multi-tenant por conta).
 
 Este repositório contém **apenas o front-end**. O back-end (NestJS + PostgreSQL) vive em repositório separado e já está majoritariamente disponível — o front consome a API real (`VITE_API_URL`), seguindo o contrato documentado na wiki e os tipos gerados em `src/types/api-types.d.ts`.
 
 ## Fonte da verdade: `wiki/`
 
-`wiki/` é um symlink para a especificação do projeto no vault Obsidian (`~/Documentos/I'AM/PESSOAL/CHURCH_FLOW`). **É somente leitura neste repositório** — mudanças de spec acontecem no vault, nunca daqui.
+`wiki/` é um symlink para a especificação do projeto no vault Obsidian (`~/Documentos/I'AM/PESSOAL/MIYRAH`). **É somente leitura neste repositório** — mudanças de spec acontecem no vault, nunca daqui.
 
 | Documento                        | Conteúdo                                                                     |
 | -------------------------------- | ---------------------------------------------------------------------------- |
-| `wiki/Church_Flow.md`            | Spec geral: visão, requisitos, telas e regras de negócio                     |
+| `wiki/Miyrah.md`            | Spec geral: visão, requisitos, telas e regras de negócio                     |
 | `wiki/design_system.md`          | Tokens visuais: cores, tipografia, layout, elemento de assinatura            |
 | `wiki/API_docs.md`               | Padrões globais da API: envelope de resposta, auth, paginação, erros, casing |
 | `wiki/api/*.md`                  | Contrato endpoint a endpoint, por domínio (auth, members, transactions…)     |
@@ -99,10 +99,11 @@ Rotas: `/login`, `/register`, `/forgot-password`, `/reset-password` (públicas, 
 
 ### Design system (`wiki/design_system.md`)
 
-- Os tokens `Papel` `#EEF1E7`, `Tinta` `#202B22`, `Contas` `#2B5C4F`, `Entradas` `#1E7A46`, `Saídas` `#A6342A` e `Linha` `#C9D0C1` viram CSS variables integradas ao tema Tailwind/shadcn (`Papel`→background, `Tinta`→foreground, `Contas`→primary, `Linha`→border, `Entradas`/`Saídas`→cores semânticas próprias). **Proibido hex hardcoded em componente** — sempre via token.
-- Fontes self-hosted via `@fontsource`: **Bitter** (títulos/display), **Inter** (corpo), **IBM Plex Mono** com tabular figures (todo valor monetário e numérico).
-- Todo valor monetário: fonte mono, alinhado à direita, na cor semântica com sinal `+`/`−` explícito — a cor nunca é a única pista.
-- Tabelas com régua fina em `Linha` (sem zebra striping); cards com borda fina, sem sombra.
+- Paleta **monocromática azul sobre base clara e morna**. Tokens `Papel` `#F1EDE4` (fundo), `Superfície` `#FCFBF8` (card), `Elevado` `#FFFFFF` (drawer/popover), `Tinta` `#12203A` (texto), `Azul` `#1472E6` (accent/primary), `Linha` `#D9D6CC` (borda), `Entradas` `#1F7A54` e `Saídas` `#B5443A` (semânticos de valor) viram CSS variables integradas ao tema Tailwind/shadcn (`Papel`→background, `Superfície`→card, `Elevado`→popover, `Tinta`→foreground, `Azul`→primary/ring, `Linha`→border). **Proibido hex hardcoded em componente** — sempre via token.
+- Fontes: **Recoleta** (self-hosted, títulos/display), **Barlow** (`@fontsource`, corpo/UI) e **JetBrains Mono** (`@fontsource`, tabular figures — todo valor monetário e numérico).
+- Todo valor monetário: fonte mono, alinhado à direita, na cor semântica com sinal `+`/`−` explícito — a cor nunca é a única pista. `Azul` nunca é cor de dinheiro.
+- Profundidade por **elevação**: contorno em `Linha` + sombra azul-tingida (`sm` em cards/tabela/filtros, `lg` no card de auth, `2xl` no drawer). Tabelas com régua fina em `Linha` (sem zebra striping).
+- Formulários de **criar/editar** em **drawer lateral não-modal** (`FormDrawer`, mantém a tela principal utilizável); **confirmações destrutivas** em **pop-up** centralizado (`ConfirmModal`).
 - A cor de categoria é **dado do usuário** (aparece só como swatch/dot ao lado do nome) — nunca substitui `Entradas`/`Saídas` no valor.
 
 ### Consumo de API (`wiki/API_docs.md`)

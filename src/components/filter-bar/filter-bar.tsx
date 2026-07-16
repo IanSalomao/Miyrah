@@ -17,7 +17,7 @@ export function FilterBar({ children, className }: FilterBarProps) {
       role="toolbar"
       aria-label="Filtros"
       className={cn(
-        'flex flex-wrap items-center gap-3 rounded-md border border-border bg-card p-3',
+        'flex flex-wrap items-center gap-3 rounded-md border border-border bg-card p-3 shadow-xs',
         className,
       )}
     >

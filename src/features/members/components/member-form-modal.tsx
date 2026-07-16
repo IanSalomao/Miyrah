@@ -4,7 +4,7 @@
 import { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { ModalForm } from '@/components/modal-form/modal-form'
+import { FormDrawer } from '@/components/modal-form/form-drawer'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ApiError } from '@/lib/api-client'
@@ -99,7 +99,7 @@ export function MemberFormModal({ open, onOpenChange, member }: MemberFormModalP
   }
 
   return (
-    <ModalForm
+    <FormDrawer
       open={open}
       onOpenChange={onOpenChange}
       title={isEditing ? 'Editar membro' : 'Adicionar membro'}
@@ -171,6 +171,6 @@ export function MemberFormModal({ open, onOpenChange, member }: MemberFormModalP
         />
         {errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}
       </div>
-    </ModalForm>
+    </FormDrawer>
   )
 }

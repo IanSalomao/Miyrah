@@ -4,18 +4,21 @@
 @import './styles/fonts.css';
 
 /* Variante dark declarada para os componentes shadcn compilarem `dark:*`,
-   mas o tema é único e claro (design_system.md só define a paleta "Papel"):
+   mas o tema é único e claro (design_system.md — base "Papel" morna):
    nenhuma classe .dark é aplicada em lugar algum. */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Tipografia (design_system.md) */
-  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Bitter', ui-serif, Georgia, serif;
+  /* Tipografia (design_system.md)
+     - Recoleta (display): títulos/cabeçalhos
+     - Barlow (sans): corpo, labels, tabelas, botões
+     - JetBrains Mono: valores monetários/numéricos (tabular) */
+  --font-sans: 'Barlow', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Recoleta', ui-serif, Georgia, serif;
   --font-heading: var(--font-display);
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-  /* Cores base shadcn → tokens Church Flow */
+  /* Cores base shadcn → tokens Miyrah */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -66,71 +69,91 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Sombras azul-tingidas, bem definidas — profundidade espacial
+     (design_system.md → "divisão de espaços por elevação"). */
+  --shadow-xs: 0 1px 2px rgba(18, 32, 58, 0.06);
+  --shadow-sm: 0 1px 3px rgba(18, 32, 58, 0.09), 0 1px 2px rgba(18, 32, 58, 0.06);
+  --shadow-md: 0 4px 12px rgba(18, 32, 58, 0.1), 0 2px 4px rgba(18, 32, 58, 0.06);
+  --shadow-lg: 0 12px 28px rgba(18, 32, 58, 0.14), 0 4px 8px rgba(18, 32, 58, 0.08);
+  --shadow-xl: 0 20px 40px rgba(18, 32, 58, 0.18), 0 6px 12px rgba(18, 32, 58, 0.1);
+  --shadow-2xl: 0 24px 56px rgba(18, 32, 58, 0.22);
 }
 
 :root {
-  /* Raio discreto — estética de livro-caixa, não SaaS arredondado */
-  --radius: 0.375rem;
+  /* Raio generoso/orgânico — leveza e ar (imagery de referência) */
+  --radius: 0.75rem;
 
-  /* Tokens de marca (hex vindos direto de wiki/design_system.md) */
-  --papel: #eef1e7;
-  --tinta: #202b22;
-  --contas: #2b5c4f;
-  --linha: #c9d0c1;
-  --entradas: #1e7a46;
-  --saidas: #a6342a;
+  /* ============================================================
+     Tokens de marca Miyrah (ver wiki/design_system.md)
+     Paleta monocromática: azul vibrante sobre base clara e morna.
+     ============================================================ */
+  --papel: #f8f8f8; /* Fundo da página — bege quase branco, morno */
+  --superficie: #fcfbf8; /* Card — branco morno, 1º nível de elevação */
+  --elevado: #ffffff; /* Drawer/popover/dropdown — branco puro, topo */
+  --tinta: #12203a; /* Texto principal — quase-preto com subtom azul */
+  --tinta-muted: #5a6473; /* Texto secundário */
+  --tinta-subtle: #8a93a1; /* Texto terciário / captions */
+  --azul: #1472e6; /* Accent — único protagonista cromático */
+  --azul-hover: #0f5bc0; /* Estado pressed / hover mais forte */
+  --azul-soft: #e4effd; /* Tint de hover, item selecionado, badge */
+  --navy: #1b2f9e; /* Tom escuro de apoio (charts, momentos) */
+  --linha: #d9d6cc; /* Contorno padrão, bem definido */
+  --linha-forte: #b6c0c4; /* Contorno de ênfase */
+  --entradas: #1f7a54; /* Semântico — valores de entrada (+), sóbrio */
+  --saidas: #b5443a; /* Semântico — valores de saída (−), vermelho-tijolo */
 
   /* Papel → fundo; Tinta → texto */
   --background: var(--papel);
   --foreground: var(--tinta);
-  --card: var(--papel);
+  --card: var(--superficie);
   --card-foreground: var(--tinta);
-  --popover: var(--papel);
+  --popover: var(--elevado);
   --popover-foreground: var(--tinta);
 
-  /* Contas → accent de interação (primary) */
-  --primary: var(--contas);
-  --primary-foreground: var(--papel);
+  /* Azul → accent de interação (primary) */
+  --primary: var(--azul);
+  --primary-foreground: #ffffff;
 
-  /* Neutros de apoio derivados do Papel/Linha */
-  --secondary: #e1e6d9;
+  /* Neutros de apoio, mornos */
+  --secondary: #eae6dc;
   --secondary-foreground: var(--tinta);
-  --muted: #e1e6d9;
-  --muted-foreground: #4e5a50; /* Tinta dessaturada — texto secundário, AA sobre Papel */
-  --accent: #dee4d6; /* fundo de hover */
-  --accent-foreground: var(--tinta);
+  --muted: #eae6dc;
+  --muted-foreground: var(--tinta-muted);
+  --accent: var(--azul-soft); /* hover/seleção com tint azul */
+  --accent-foreground: var(--azul-hover);
 
   /* Saídas → cor destrutiva (excluir etc.) */
   --destructive: var(--saidas);
-  --destructive-foreground: var(--papel);
+  --destructive-foreground: #ffffff;
 
-  /* Linha → bordas e réguas finas */
+  /* Linha → bordas e réguas finas; foco em Azul */
   --border: var(--linha);
   --input: var(--linha);
-  --ring: var(--contas); /* foco */
+  --ring: var(--azul);
 
   /* Semânticos financeiros */
   --income: var(--entradas);
-  --income-foreground: var(--papel);
+  --income-foreground: #ffffff;
   --expense: var(--saidas);
-  --expense-foreground: var(--papel);
+  --expense-foreground: #ffffff;
 
-  /* Gráficos (fallback) */
-  --chart-1: var(--entradas);
-  --chart-2: var(--saidas);
-  --chart-3: var(--contas);
-  --chart-4: #b08a3e;
-  --chart-5: #5b6a7d;
+  /* Gráficos (fallback) — rampa azul + os dois semânticos */
+  --chart-1: var(--azul);
+  --chart-2: var(--navy);
+  --chart-3: #6aa8f2;
+  --chart-4: var(--entradas);
+  --chart-5: var(--saidas);
 
-  /* Sidebar */
-  --sidebar: #eaeee1;
+  /* Sidebar — painel branco elevado, destacado do Papel da página */
+  --sidebar: var(--elevado);
   --sidebar-foreground: var(--tinta);
-  --sidebar-primary: var(--contas);
-  --sidebar-primary-foreground: var(--papel);
-  --sidebar-accent: #dee4d6;
-  --sidebar-accent-foreground: var(--tinta);
+  --sidebar-primary: var(--azul);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--azul-soft); /* item de navegação ativo */
+  --sidebar-accent-foreground: var(--azul-hover);
   --sidebar-border: var(--linha);
-  --sidebar-ring: var(--contas);
+  --sidebar-ring: var(--azul);
 }
 
 @layer base {
@@ -140,13 +163,13 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
-  /* Títulos em Bitter (display) */
+  /* Títulos em Recoleta (display) */
   h1,
   h2,
   h3 {
     @apply font-display;
   }
-  /* IBM Plex Mono com tabular figures em todo valor numérico */
+  /* JetBrains Mono com tabular figures em todo valor numérico */
   .font-mono {
     font-variant-numeric: tabular-nums;
   }

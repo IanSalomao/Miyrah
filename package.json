@@ -1,5 +1,5 @@
 {
-  "name": "church-flow",
+  "name": "miyrah",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,9 +12,8 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "@fontsource-variable/inter": "^5.2.8",
-    "@fontsource/bitter": "^5.2.10",
-    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/barlow": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
     "@hookform/resolvers": "^5.4.0",
     "@tailwindcss/vite": "^4.3.2",
     "@tanstack/react-query": "^5.101.2",

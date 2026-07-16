@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ModalForm } from '@/components/modal-form/modal-form'
+import { FormDrawer } from '@/components/modal-form/form-drawer'
 import { ApiError } from '@/lib/api-client'
 import type { Transaction, TransactionType } from '@/types'
 import {
@@ -142,7 +142,7 @@ function TransactionForm({ open, onOpenChange, transaction }: TransactionFormMod
   const isSaving = isSubmitting || createMutation.isPending || updateMutation.isPending
 
   return (
-    <ModalForm
+    <FormDrawer
       open={open}
       onOpenChange={onOpenChange}
       title={isEditing ? 'Editar transação' : 'Adicionar transação'}
@@ -268,7 +268,7 @@ function TransactionForm({ open, onOpenChange, transaction }: TransactionFormMod
           )}
         />
       </div>
-    </ModalForm>
+    </FormDrawer>
   )
 }
 

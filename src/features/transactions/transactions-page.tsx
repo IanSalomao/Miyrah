@@ -198,7 +198,11 @@ export function TransactionsPage() {
           if (!open) setDeletingTransaction(null)
         }}
         title="Excluir transação"
-        description={`Tem certeza de que deseja excluir a transação "${deletingTransaction?.description ?? formatDate(deletingTransaction?.date ?? '')}"? Esta ação não pode ser desfeita.`}
+        description={
+          deletingTransaction
+            ? `Tem certeza de que deseja excluir a transação "${deletingTransaction.description || formatDate(deletingTransaction.date)}"? Esta ação não pode ser desfeita.`
+            : ''
+        }
         onConfirm={handleConfirmDelete}
         loading={removeMutation.isPending}
       />

@@ -70,7 +70,7 @@ export function MetricCard({
       : formatSignedCurrency(getSignedValue(variant, value))
 
   return (
-    <div className={cn('rounded-lg border border-border bg-card p-4 shadow-none', className)}>
+    <div className={cn('rounded-lg border border-border bg-card p-4 shadow-sm', className)}>
       <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
       {loading ? (
         <Skeleton className="mt-2 h-8 w-28" aria-label={`${label} — carregando`} />

@@ -5,7 +5,7 @@
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ModalForm } from '@/components/modal-form/modal-form'
+import { FormDrawer } from '@/components/modal-form/form-drawer'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -106,7 +106,7 @@ export function CategoryFormModal({
   })
 
   return (
-    <ModalForm
+    <FormDrawer
       open={open}
       onOpenChange={onOpenChange}
       title={isEditing ? 'Editar categoria' : 'Adicionar categoria'}
@@ -177,6 +177,6 @@ export function CategoryFormModal({
         />
         {errors.color && <p className="text-xs text-destructive">{errors.color.message}</p>}
       </div>
-    </ModalForm>
+    </FormDrawer>
   )
 }

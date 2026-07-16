@@ -8,7 +8,7 @@ import { ApiError } from '@/lib/api-client'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { ModalForm } from '@/components/modal-form/modal-form'
+import { FormDrawer } from '@/components/modal-form/form-drawer'
 import { MemberPicker } from '@/components/member-picker/member-picker'
 import { useCreateMinistry, useUpdateMinistry } from '../hooks/use-ministries'
 import { ministryFormSchema, type MinistryFormValues } from '../schemas'
@@ -84,7 +84,7 @@ export function MinistryFormModal({ open, onOpenChange, ministry }: MinistryForm
   }
 
   return (
-    <ModalForm
+    <FormDrawer
       open={open}
       onOpenChange={onOpenChange}
       title={isEditing ? 'Editar ministério' : 'Adicionar ministério'}
@@ -127,6 +127,6 @@ export function MinistryFormModal({ open, onOpenChange, ministry }: MinistryForm
           <p className="text-sm text-destructive">{form.formState.errors.responsibleId.message}</p>
         )}
       </div>
-    </ModalForm>
+    </FormDrawer>
   )
 }

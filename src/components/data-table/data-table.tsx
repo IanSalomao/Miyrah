@@ -83,7 +83,7 @@ export function DataTable<TRow>({
 
   return (
     <div className={cn('flex flex-col gap-4', className)}>
-      <div className="overflow-hidden rounded-md border border-border">
+      <div className="overflow-hidden rounded-md border border-border bg-card shadow-sm">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent">

@@ -46,7 +46,7 @@ export function SideBar() {
     <aside className="flex h-svh w-60 shrink-0 flex-col border-r border-border bg-sidebar">
       <div className="flex flex-col gap-0.5 px-6 py-6">
         <span className="font-display text-lg font-semibold tracking-tight text-primary">
-          Church Flow
+          Miyrah
         </span>
         <span className="text-xs text-muted-foreground">Controle financeiro</span>
       </div>
