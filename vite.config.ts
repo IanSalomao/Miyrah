@@ -1,5 +1,4 @@
-/// <reference types="vitest/config" />
-import { defineConfig } from 'vite'
+import { configDefaults, defineConfig } from 'vitest/config'
 import { fileURLToPath, URL } from 'node:url'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -19,5 +18,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    // Não varrer as worktrees dos agentes em .claude/ (cópias completas do repo)
+    exclude: [...configDefaults.exclude, '**/.claude/**'],
   },
 })
