@@ -1,7 +1,7 @@
 // Confirmação de exclusão de membro — component_modal_form.md (variante "Confirmação").
 // Exclusão é soft delete via DELETE (page_members.md).
 
-import { ConfirmModal } from '@/components/modal-form/modal-form'
+import { ConfirmModal } from '@/components/modal-form/confirm-modal'
 import { ApiError } from '@/lib/api-client'
 import type { Member } from '@/types'
 import { useDeleteMember } from '../hooks/use-members'
@@ -40,7 +40,7 @@ export function MemberDeleteModal({ member, onOpenChange }: MemberDeleteModalPro
           : ''
       }
       onConfirm={handleConfirm}
-      isSubmitting={deleteMutation.isPending}
+      loading={deleteMutation.isPending}
     />
   )
 }

@@ -1,8 +1,11 @@
 // Tabela de categorias — wiki/pages/page_categories.md.
 // Colunas: Categoria (swatch + nome), Descrição, Tipo, Ações (Editar/Excluir).
 import { Pencil, Tags, Trash2 } from 'lucide-react'
-import { DataTable, type DataTableColumn } from '@/components/data-table/data-table'
-import { Button } from '@/components/ui/button'
+import {
+  DataTable,
+  type DataTableColumn,
+  type DataTableRowAction,
+} from '@/components/data-table/data-table'
 import { Badge } from '@/components/ui/badge'
 import type { Category, TransactionType } from '@/types'
 
@@ -32,7 +35,7 @@ export function CategoryTable({
 }: CategoryTableProps) {
   const columns: DataTableColumn<Category>[] = [
     {
-      key: 'name',
+      id: 'name',
       header: 'Categoria',
       cell: (category) => (
         <div className="flex items-center gap-2">
@@ -46,14 +49,14 @@ export function CategoryTable({
       ),
     },
     {
-      key: 'description',
+      id: 'description',
       header: 'Descrição',
       cell: (category) => (
         <span className="text-muted-foreground">{category.description ?? '—'}</span>
       ),
     },
     {
-      key: 'type',
+      id: 'type',
       header: 'Tipo',
       cell: (category) => (
         <Badge
@@ -68,32 +71,19 @@ export function CategoryTable({
         </Badge>
       ),
     },
+  ]
+
+  const rowActions: DataTableRowAction<Category>[] = [
     {
-      key: 'actions',
-      header: 'Ações',
-      align: 'right',
-      cell: (category) => (
-        <div className="flex justify-end gap-1 opacity-0 transition-opacity group-hover/row:opacity-100">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label={`Editar ${category.name}`}
-            onClick={() => onEdit(category)}
-          >
-            <Pencil className="size-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label={`Excluir ${category.name}`}
-            onClick={() => onDelete(category)}
-          >
-            <Trash2 className="size-4 text-destructive" />
-          </Button>
-        </div>
-      ),
+      label: 'Editar',
+      icon: Pencil,
+      onClick: (category) => onEdit(category),
+    },
+    {
+      label: 'Excluir',
+      icon: Trash2,
+      variant: 'destructive',
+      onClick: (category) => onDelete(category),
     },
   ]
 
@@ -103,15 +93,15 @@ export function CategoryTable({
       data={categories}
       getRowId={(category) => category.id}
       isLoading={isLoading}
-      isError={isError}
+      error={isError ? 'Não foi possível carregar as categorias.' : null}
       onRetry={onRetry}
-      emptyMessage="Nenhuma categoria encontrada"
-      emptyAction={
-        <Button type="button" onClick={onAdd}>
-          <Tags className="size-4" />
-          Adicionar categoria
-        </Button>
-      }
+      rowActions={rowActions}
+      emptyState={{
+        icon: Tags,
+        title: 'Nenhuma categoria encontrada',
+        actionLabel: 'Adicionar categoria',
+        onAction: onAdd,
+      }}
     />
   )
 }

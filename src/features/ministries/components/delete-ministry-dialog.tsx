@@ -1,9 +1,8 @@
 // Confirmação de exclusão de ministério — wiki/pages/page_ministries.md
 // (variante "Confirmação" de component_modal_form). Soft delete via DELETE /v1/ministries/{id}.
 
-import type { FormEvent } from 'react'
 import { ApiError } from '@/lib/api-client'
-import { ModalForm } from '@/components/modal-form/modal-form'
+import { ConfirmModal } from '@/components/modal-form/confirm-modal'
 import { useRemoveMinistry } from '../hooks/use-ministries'
 import type { Ministry } from '@/types'
 
@@ -16,8 +15,7 @@ export interface DeleteMinistryDialogProps {
 export function DeleteMinistryDialog({ ministry, open, onOpenChange }: DeleteMinistryDialogProps) {
   const removeMutation = useRemoveMinistry()
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  function handleConfirm() {
     if (!ministry) return
 
     removeMutation.mutate(ministry.id, {
@@ -32,19 +30,18 @@ export function DeleteMinistryDialog({ ministry, open, onOpenChange }: DeleteMin
   }
 
   return (
-    <ModalForm
+    <ConfirmModal
       open={open}
       onOpenChange={onOpenChange}
       title="Excluir ministério"
       description={
         ministry
           ? `Tem certeza de que deseja excluir "${ministry.name}"? Esta ação não pode ser desfeita.`
-          : undefined
+          : ''
       }
-      onSubmit={handleSubmit}
-      submitLabel="Excluir"
-      variant="destructive"
-      isSubmitting={removeMutation.isPending}
+      confirmLabel="Excluir"
+      onConfirm={handleConfirm}
+      loading={removeMutation.isPending}
     />
   )
 }

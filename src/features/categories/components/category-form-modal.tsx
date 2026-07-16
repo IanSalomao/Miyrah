@@ -5,7 +5,7 @@
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormModal } from '@/components/modal-form/modal-form'
+import { ModalForm } from '@/components/modal-form/modal-form'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -106,14 +106,15 @@ export function CategoryFormModal({
   })
 
   return (
-    <FormModal
+    <ModalForm
       open={open}
       onOpenChange={onOpenChange}
       title={isEditing ? 'Editar categoria' : 'Adicionar categoria'}
       onSubmit={onSubmit}
-      isSubmitting={isSubmitting}
-      errorMessage={errorMessage}
+      loading={isSubmitting}
     >
+      {errorMessage && <p className="text-sm text-destructive">{errorMessage}</p>}
+
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="category-name">Nome</Label>
         <Input id="category-name" aria-invalid={Boolean(errors.name)} {...register('name')} />
@@ -176,6 +177,6 @@ export function CategoryFormModal({
         />
         {errors.color && <p className="text-xs text-destructive">{errors.color.message}</p>}
       </div>
-    </FormModal>
+    </ModalForm>
   )
 }

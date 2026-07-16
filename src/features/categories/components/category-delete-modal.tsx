@@ -1,7 +1,7 @@
 // Confirmação de exclusão de categoria — wiki/api/categories.md (DELETE /v1/categories/{id}).
 // Exclusão sempre permitida, mesmo com transações vinculadas (soft delete).
 import { useState } from 'react'
-import { ConfirmModal } from '@/components/modal-form/modal-form'
+import { ConfirmModal } from '@/components/modal-form/confirm-modal'
 import { ApiError } from '@/lib/api-client'
 import { useDeleteCategory } from '../hooks/use-category-mutations'
 import type { Category } from '@/types'
@@ -59,8 +59,9 @@ export function CategoryDeleteModal({
         </>
       }
       onConfirm={handleConfirm}
-      isConfirming={deleteCategory.isPending}
-      errorMessage={errorMessage}
-    />
+      loading={deleteCategory.isPending}
+    >
+      {errorMessage && <p className="text-sm text-destructive">{errorMessage}</p>}
+    </ConfirmModal>
   )
 }

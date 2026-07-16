@@ -3,7 +3,7 @@
 // "Sem responsável"); ícones de Editar/Excluir revelados no hover.
 
 import { Pencil, Trash2 } from 'lucide-react'
-import { Avatar } from '@/components/avatar/avatar'
+import { MemberAvatar } from '@/components/avatar/avatar'
 import { Button } from '@/components/ui/button'
 import type { Ministry } from '@/types'
 
@@ -44,7 +44,7 @@ export function MinistryCard({ ministry, onEdit, onDelete }: MinistryCardProps) 
       <div className="mt-auto flex items-center gap-2 border-t border-border pt-3">
         {ministry.responsible ? (
           <>
-            <Avatar name={ministry.responsible.name} size="sm" />
+            <MemberAvatar name={ministry.responsible.name} size="sm" />
             <span className="truncate text-sm font-medium">{ministry.responsible.name}</span>
           </>
         ) : (

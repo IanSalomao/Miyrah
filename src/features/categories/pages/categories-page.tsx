@@ -107,7 +107,14 @@ export function CategoriesPage() {
       />
 
       {data && (
-        <Pagination meta={data.meta} onPageChange={setPage} onLimitChange={handleLimitChange} />
+        <Pagination
+          page={data.meta.page}
+          limit={data.meta.limit}
+          total={data.meta.total}
+          totalPages={data.meta.totalPages}
+          onPageChange={setPage}
+          onLimitChange={handleLimitChange}
+        />
       )}
 
       <CategoryFormModal

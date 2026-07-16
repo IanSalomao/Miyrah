@@ -90,7 +90,7 @@ export function MinistryFormModal({ open, onOpenChange, ministry }: MinistryForm
       title={isEditing ? 'Editar ministério' : 'Adicionar ministério'}
       onSubmit={form.handleSubmit(handleSubmit)}
       submitLabel={isEditing ? 'Salvar alterações' : 'Adicionar'}
-      isSubmitting={isSubmitting}
+      loading={isSubmitting}
     >
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="ministry-name">Nome</Label>

@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { Pencil, Plus, Trash2, Users } from 'lucide-react'
-import { MemberAvatar } from '@/components/avatar/member-avatar'
+import { MemberAvatar } from '@/components/avatar/avatar'
 import { Button } from '@/components/ui/button'
-import { DataTable, type DataTableColumn } from '@/components/data-table/data-table'
-import { FilterBar } from '@/components/filter-bar/filter-bar'
-import { Pagination } from '@/components/pagination/pagination'
+import { DataTable, type DataTableColumn, type DataTableRowAction } from '@/components/data-table/data-table'
+import { FilterBar, SearchFilter } from '@/components/filter-bar'
 import { formatDate, maskPhone } from '@/lib/format'
 import type { Member } from '@/types'
 import { useMembers } from './hooks/use-members'
@@ -42,7 +41,7 @@ export function MembersPage() {
 
   const columns: DataTableColumn<Member>[] = [
     {
-      key: 'member',
+      id: 'member',
       header: 'Membro',
       cell: (member) => (
         <div className="flex items-center gap-3">
@@ -52,7 +51,7 @@ export function MembersPage() {
       ),
     },
     {
-      key: 'birthDate',
+      id: 'birthDate',
       header: 'Data de Nascimento',
       cell: (member) => (
         <span className="font-mono text-sm">
@@ -61,7 +60,7 @@ export function MembersPage() {
       ),
     },
     {
-      key: 'baptismDate',
+      id: 'baptismDate',
       header: 'Data de Batismo',
       cell: (member) => (
         <span className="font-mono text-sm">
@@ -70,43 +69,30 @@ export function MembersPage() {
       ),
     },
     {
-      key: 'email',
+      id: 'email',
       header: 'Email',
       cell: (member) => member.email ?? '—',
     },
     {
-      key: 'phone',
+      id: 'phone',
       header: 'Telefone',
       cell: (member) => (
         <span className="font-mono text-sm">{member.phone ? maskPhone(member.phone) : '—'}</span>
       ),
     },
+  ]
+
+  const rowActions: DataTableRowAction<Member>[] = [
     {
-      key: 'actions',
-      header: 'Ações',
-      align: 'right',
-      cell: (member) => (
-        <div className="flex justify-end gap-1 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label={`Editar ${member.name}`}
-            onClick={() => setEditingMember(member)}
-          >
-            <Pencil className="size-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label={`Excluir ${member.name}`}
-            onClick={() => setDeletingMember(member)}
-          >
-            <Trash2 className="size-4" />
-          </Button>
-        </div>
-      ),
+      label: 'Editar',
+      icon: Pencil,
+      onClick: (member) => setEditingMember(member),
+    },
+    {
+      label: 'Excluir',
+      icon: Trash2,
+      variant: 'destructive',
+      onClick: (member) => setDeletingMember(member),
     },
   ]
 
@@ -117,44 +103,42 @@ export function MembersPage() {
         <p className="text-sm text-muted-foreground">Cadastro e consulta dos membros da igreja.</p>
       </div>
 
-      <FilterBar
-        searchValue={searchInput}
-        onSearchChange={setSearchInput}
-        searchPlaceholder="Buscar por nome"
-        action={
-          <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" />
-            Adicionar membro
-          </Button>
-        }
-      />
+      <FilterBar>
+        <SearchFilter
+          value={searchInput}
+          onChange={setSearchInput}
+          placeholder="Buscar por nome"
+        />
+        <Button type="button" className="ml-auto" onClick={() => setIsCreateOpen(true)}>
+          <Plus className="size-4" />
+          Adicionar membro
+        </Button>
+      </FilterBar>
 
       <DataTable
         columns={columns}
         data={members}
-        rowKey={(member) => member.id}
+        getRowId={(member) => member.id}
         isLoading={isLoading}
-        isError={isError}
+        error={isError ? 'Não foi possível carregar os membros.' : null}
         onRetry={() => void refetch()}
-        emptyIcon={<Users className="size-8" />}
-        emptyMessage="Nenhum membro encontrado"
-        emptyAction={
-          <Button type="button" onClick={() => setIsCreateOpen(true)}>
-            <Plus className="size-4" />
-            Adicionar membro
-          </Button>
-        }
-      />
-
-      <Pagination
-        page={meta.page}
-        limit={meta.limit}
-        total={meta.total}
-        totalPages={meta.totalPages}
-        onPageChange={setPage}
-        onLimitChange={(newLimit) => {
-          setLimit(newLimit)
-          setPage(1)
+        rowActions={rowActions}
+        emptyState={{
+          icon: Users,
+          title: 'Nenhum membro encontrado',
+          actionLabel: 'Adicionar membro',
+          onAction: () => setIsCreateOpen(true),
+        }}
+        pagination={{
+          page: meta.page,
+          limit: meta.limit,
+          total: meta.total,
+          totalPages: meta.totalPages,
+          onPageChange: setPage,
+          onLimitChange: (newLimit) => {
+            setLimit(newLimit)
+            setPage(1)
+          },
         }}
       />
 
