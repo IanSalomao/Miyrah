@@ -83,20 +83,18 @@ export function DashboardPage() {
             />
           ) : (
             <>
-              <LineChart data={chartsQuery.data?.line ?? []} loading={chartsQuery.isPending} />
+              <LineChart data={chartsQuery.data?.line ?? []} isLoading={chartsQuery.isPending} />
 
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <PieChart
                   title="Entradas por categoria"
                   data={chartsQuery.data?.incomeByCategory ?? []}
-                  loading={chartsQuery.isPending}
-                  emptyLabel="Nenhuma entrada encontrada"
+                  isLoading={chartsQuery.isPending}
                 />
                 <PieChart
                   title="Saídas por categoria"
                   data={chartsQuery.data?.expenseByCategory ?? []}
-                  loading={chartsQuery.isPending}
-                  emptyLabel="Nenhuma saída encontrada"
+                  isLoading={chartsQuery.isPending}
                 />
               </div>
             </>

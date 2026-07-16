@@ -19,6 +19,12 @@ export interface MetricCardProps {
   variant: MetricCardVariant
   /** Skeleton no lugar do valor, enquanto o filtro/busca associado está sendo aplicado. */
   loading?: boolean
+  /**
+   * Override de formatação para a variante `neutral` (ex.: "Ticket médio" em moeda,
+   * em vez do formato inteiro padrão de contagem). Sem efeito nas demais variantes,
+   * que sempre usam moeda com sinal.
+   */
+  formatValue?: (value: number) => string
   className?: string
 }
 
@@ -49,11 +55,18 @@ function getColorClass(variant: MetricCardVariant, value: number): string {
   }
 }
 
-export function MetricCard({ label, value, variant, loading = false, className }: MetricCardProps) {
+export function MetricCard({
+  label,
+  value,
+  variant,
+  loading = false,
+  formatValue,
+  className,
+}: MetricCardProps) {
   const colorClass = getColorClass(variant, value)
   const displayValue =
     variant === 'neutral'
-      ? integerFormatter.format(value)
+      ? (formatValue ?? integerFormatter.format.bind(integerFormatter))(value)
       : formatSignedCurrency(getSignedValue(variant, value))
 
   return (

@@ -4,7 +4,7 @@
 
 import { useMemo, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
-import { SegmentedControl } from '@/components/filter-bar/filter-bar'
+import { SegmentedControl } from './segmented-control'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -147,7 +147,7 @@ function TransactionForm({ open, onOpenChange, transaction }: TransactionFormMod
       onOpenChange={onOpenChange}
       title={isEditing ? 'Editar transação' : 'Adicionar transação'}
       onSubmit={handleSubmit(onSubmit)}
-      isSubmitting={isSaving}
+      loading={isSaving}
     >
       <div className="flex flex-col gap-1.5">
         <Label>Tipo</Label>

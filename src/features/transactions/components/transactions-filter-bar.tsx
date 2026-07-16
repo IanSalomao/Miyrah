@@ -7,7 +7,7 @@
 // um seletor de categoria único (respeitando o contrato real da API) em vez
 // de inventar um parâmetro não documentado. Decisão registrada para revisão.
 
-import { FilterBar, FilterBarSearch, SegmentedControl } from '@/components/filter-bar/filter-bar'
+import { FilterBar, SearchFilter, TypeFilter } from '@/components/filter-bar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -19,12 +19,6 @@ import {
 } from '@/components/ui/select'
 import type { Category } from '@/types'
 import type { TransactionsFilters } from '../hooks/use-transactions-query'
-
-const TYPE_FILTER_OPTIONS = [
-  { value: 'all' as const, label: 'Todas' },
-  { value: 'income' as const, label: 'Entradas' },
-  { value: 'expense' as const, label: 'Saídas' },
-]
 
 interface TransactionsFilterBarProps {
   filters: TransactionsFilters
@@ -40,8 +34,8 @@ export function TransactionsFilterBar({
   onAddTransaction,
 }: TransactionsFilterBarProps) {
   return (
-    <FilterBar action={<Button onClick={onAddTransaction}>Adicionar transação</Button>}>
-      <FilterBarSearch
+    <FilterBar>
+      <SearchFilter
         value={filters.search}
         onChange={(value) => onFiltersChange({ search: value, page: 1 })}
         placeholder="Buscar por descrição..."
@@ -89,12 +83,14 @@ export function TransactionsFilterBar({
         </SelectContent>
       </Select>
 
-      <SegmentedControl
-        aria-label="Filtrar por tipo"
+      <TypeFilter
         value={filters.type}
         onChange={(value) => onFiltersChange({ type: value, page: 1 })}
-        options={TYPE_FILTER_OPTIONS}
       />
+
+      <Button type="button" className="ml-auto" onClick={onAddTransaction}>
+        Adicionar transação
+      </Button>
     </FilterBar>
   )
 }

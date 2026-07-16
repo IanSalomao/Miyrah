@@ -4,7 +4,7 @@
 
 import { useState } from 'react'
 import { ChevronsUpDownIcon, XIcon } from 'lucide-react'
-import { Avatar } from '@/components/avatar/avatar'
+import { MemberAvatar } from '@/components/avatar/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -82,7 +82,7 @@ export function MemberPicker({ value, onChange, disabled }: MemberPickerProps) {
                   value?.id === member.id && 'bg-muted',
                 )}
               >
-                <Avatar name={member.name} size="sm" />
+                <MemberAvatar name={member.name} size="sm" />
                 {member.name}
               </button>
             ))}

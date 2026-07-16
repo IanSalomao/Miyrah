@@ -3,11 +3,13 @@
 
 import { useState } from 'react'
 import { PencilIcon, Trash2Icon } from 'lucide-react'
-import { DataTable, type DataTableColumn } from '@/components/data-table/data-table'
+import {
+  DataTable,
+  type DataTableColumn,
+  type DataTableRowAction,
+} from '@/components/data-table/data-table'
 import { MetricCard } from '@/components/metric-card/metric-card'
-import { ConfirmationModal } from '@/components/modal-form/modal-form'
-import { Pagination } from '@/components/pagination/pagination'
-import { Button } from '@/components/ui/button'
+import { ConfirmModal } from '@/components/modal-form/confirm-modal'
 import { cn } from '@/lib/utils'
 import { formatDate } from '@/lib/format'
 import type { Transaction } from '@/types'
@@ -97,41 +99,22 @@ export function TransactionsPage() {
     {
       id: 'value',
       header: 'Valor',
-      align: 'right',
+      numeric: true,
       cell: (row) => <TransactionAmountCell value={row.value} />,
     },
+  ]
+
+  const rowActions: DataTableRowAction<Transaction>[] = [
     {
-      id: 'actions',
-      header: 'Ações',
-      align: 'right',
-      cell: (row) => (
-        <div className="flex justify-end gap-1">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Editar transação"
-            onClick={(event) => {
-              event.stopPropagation()
-              openEditModal(row)
-            }}
-          >
-            <PencilIcon className="size-4" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Excluir transação"
-            onClick={(event) => {
-              event.stopPropagation()
-              setDeletingTransaction(row)
-            }}
-          >
-            <Trash2Icon className="size-4" />
-          </Button>
-        </div>
-      ),
+      label: 'Editar transação',
+      icon: PencilIcon,
+      onClick: (row) => openEditModal(row),
+    },
+    {
+      label: 'Excluir transação',
+      icon: Trash2Icon,
+      variant: 'destructive',
+      onClick: (row) => setDeletingTransaction(row),
     },
   ]
 
@@ -149,19 +132,19 @@ export function TransactionsPage() {
           label="Entradas"
           value={metrics.income}
           variant="income"
-          isLoading={metricsQuery.isLoading}
+          loading={metricsQuery.isLoading}
         />
         <MetricCard
           label="Saídas"
           value={metrics.expense}
           variant="expense"
-          isLoading={metricsQuery.isLoading}
+          loading={metricsQuery.isLoading}
         />
         <MetricCard
           label="Balanço"
           value={metrics.balance}
           variant="balance"
-          isLoading={metricsQuery.isLoading}
+          loading={metricsQuery.isLoading}
         />
       </div>
 
@@ -178,23 +161,29 @@ export function TransactionsPage() {
           data={transactionsQuery.data?.items ?? []}
           getRowId={(row) => row.id}
           isLoading={transactionsQuery.isLoading}
-          error={transactionsQuery.error}
+          error={
+            transactionsQuery.isError ? 'Não foi possível carregar as transações.' : null
+          }
           onRetry={() => transactionsQuery.refetch()}
-          onRowClick={openEditModal}
+          rowActions={rowActions}
           emptyState={{
             title: 'Nenhuma transação encontrada',
             actionLabel: 'Adicionar transação',
             onAction: openCreateModal,
           }}
+          pagination={
+            transactionsQuery.data
+              ? {
+                  page: transactionsQuery.data.meta.page,
+                  limit: transactionsQuery.data.meta.limit,
+                  total: transactionsQuery.data.meta.total,
+                  totalPages: transactionsQuery.data.meta.totalPages,
+                  onPageChange: (page) => patchFilters({ page }),
+                  onLimitChange: (limit) => patchFilters({ limit, page: 1 }),
+                }
+              : undefined
+          }
         />
-
-        {transactionsQuery.data && (
-          <Pagination
-            meta={transactionsQuery.data.meta}
-            onPageChange={(page) => patchFilters({ page })}
-            onLimitChange={(limit) => patchFilters({ limit, page: 1 })}
-          />
-        )}
       </div>
 
       <TransactionFormModal
@@ -203,7 +192,7 @@ export function TransactionsPage() {
         transaction={formModal.transaction}
       />
 
-      <ConfirmationModal
+      <ConfirmModal
         open={Boolean(deletingTransaction)}
         onOpenChange={(open) => {
           if (!open) setDeletingTransaction(null)
@@ -211,7 +200,7 @@ export function TransactionsPage() {
         title="Excluir transação"
         description={`Tem certeza de que deseja excluir a transação "${deletingTransaction?.description ?? formatDate(deletingTransaction?.date ?? '')}"? Esta ação não pode ser desfeita.`}
         onConfirm={handleConfirmDelete}
-        isConfirming={removeMutation.isPending}
+        loading={removeMutation.isPending}
       />
     </div>
   )

@@ -163,9 +163,8 @@ export function TransactionEditModal({
       open={open}
       onOpenChange={onOpenChange}
       title="Editar transação"
-      variant="form"
       onSubmit={handleSubmit(onSubmit)}
-      isSubmitting={updateTransactionMutation.isPending}
+      loading={updateTransactionMutation.isPending}
     >
       {formError && (
         <p role="alert" className="text-sm text-expense">

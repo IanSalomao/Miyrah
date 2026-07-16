@@ -2,7 +2,7 @@
 // mesmo tempo (wiki/pages/page_transactions.md). Membro exibe avatar + nome;
 // vínculo excluído mantém o nome com indicação visual.
 
-import { Avatar } from '@/components/avatar/avatar'
+import { MemberAvatar } from '@/components/avatar/avatar'
 import { cn } from '@/lib/utils'
 import type { MemberRef, MinistryRef } from '@/types'
 
@@ -15,7 +15,7 @@ export function TransactionLinkedCell({ member, ministry }: TransactionLinkedCel
   if (member) {
     return (
       <div className="flex items-center gap-2">
-        <Avatar name={member.name} deleted={member.deleted} />
+        <MemberAvatar name={member.name} deleted={member.deleted} />
         <span className={cn(member.deleted && 'text-muted-foreground italic')}>
           {member.name}
           {member.deleted && ' (excluído)'}
