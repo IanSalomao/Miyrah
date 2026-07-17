@@ -1,0 +1,41 @@
+// Barrel de entrada para o design-sync (não usado pelo app).
+// Reexporta os componentes do design system para o bundle window.Miyrah.
+// ui/tabs é omitido de propósito: components/tabs é a versão do DS (reestiliza ui/tabs).
+
+// Primitivos (shadcn/ui)
+export * from '@/components/ui/avatar'
+export * from '@/components/ui/badge'
+export * from '@/components/ui/button'
+export * from '@/components/ui/chart'
+export * from '@/components/ui/checkbox'
+export * from '@/components/ui/command'
+export * from '@/components/ui/dialog'
+export * from '@/components/ui/field'
+export * from '@/components/ui/form'
+export * from '@/components/ui/input-group'
+export * from '@/components/ui/input'
+export * from '@/components/ui/label'
+export * from '@/components/ui/popover'
+export * from '@/components/ui/select'
+export * from '@/components/ui/separator'
+export * from '@/components/ui/sheet'
+export * from '@/components/ui/skeleton'
+export * from '@/components/ui/table'
+export * from '@/components/ui/textarea'
+
+// Componentes do design system Miyrah
+export * from '@/components/tabs/tabs'
+export * from '@/components/tabs/filter-tabs'
+export * from '@/components/avatar/avatar'
+export * from '@/components/data-table/data-table'
+export * from '@/components/data-table/deleted-value'
+export * from '@/components/metric-card'
+export * from '@/components/line-chart'
+export * from '@/components/pie-chart'
+export * from '@/components/pagination/pagination'
+export * from '@/components/filter-bar'
+export * from '@/components/member-picker/member-picker'
+export * from '@/components/modal-form/confirm-modal'
+export * from '@/components/modal-form/form-drawer'
+export * from '@/components/side-bar/side-bar'
+export * from '@/components/auth-layout/auth-layout'
