@@ -10,13 +10,12 @@
 
 @theme inline {
   /* Tipografia (design_system.md)
-     - Recoleta (display): títulos/cabeçalhos
-     - Barlow (sans): corpo, labels, tabelas, botões
-     - JetBrains Mono: valores monetários/numéricos (tabular) */
-  --font-sans: 'Barlow', ui-sans-serif, system-ui, sans-serif;
+     - Plus Jakarta Sans: única fonte do sistema (corpo, títulos, tabelas, valores)
+     - Recoleta: exceção — título das páginas de autenticação (aplicada via classe font-display) */
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Recoleta', ui-serif, Georgia, serif;
-  --font-heading: var(--font-display);
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --font-heading: var(--font-sans);
+  --font-mono: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 
   /* Cores base shadcn → tokens Miyrah */
   --color-background: var(--background);
@@ -163,14 +162,47 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
-  /* Títulos em Recoleta (display) */
-  h1,
-  h2,
-  h3 {
-    @apply font-display;
-  }
-  /* JetBrains Mono com tabular figures em todo valor numérico */
+  /* Tabular figures em todo valor numérico (font-mono aponta para Plus Jakarta Sans) */
   .font-mono {
     font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Vitrine de autenticação (auth-showcase.tsx): entrada escalonada dos cards
+   (--as-delay, ordem embaralhada por elemento) + hover ampliando 10% e subindo
+   o z-index para sobrepor os demais (--as-z é o z-index base de empilhamento). */
+@keyframes auth-showcase-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.auth-showcase-canvas {
+  transform: scale(0.9);
+  transform-origin: top;
+}
+
+.auth-showcase-card {
+  z-index: var(--as-z, 1);
+  transform-origin: center;
+  animation: auth-showcase-in 1.85s cubic-bezier(0.16, 1, 0.2, 0.9) backwards;
+  animation-delay: var(--as-delay, 0ms);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.auth-showcase-card:hover {
+  transform: scale(1.1);
+  z-index: 50;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-showcase-card {
+    animation: none;
   }
 }
