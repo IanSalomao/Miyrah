@@ -17,6 +17,27 @@ export function useCreateTransaction() {
   })
 }
 
+/**
+ * Criação em lote (lançamentos encadeados) — como só existe
+ * `POST /v1/transactions` (uma transação por chamada), dispara uma chamada
+ * por item via `Promise.allSettled` (sucesso parcial não interrompe as
+ * demais). Invalida as queries uma única vez ao final, se ao menos uma
+ * transação tiver sido criada.
+ */
+export function useCreateTransactions() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (payloads: CreateTransactionPayload[]) =>
+      Promise.allSettled(payloads.map((payload) => createTransaction(payload))),
+    onSuccess: (results) => {
+      const hasSuccess = results.some((result) => result.status === 'fulfilled')
+      if (hasSuccess) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all })
+      }
+    },
+  })
+}
+
 export function useUpdateTransaction() {
   const queryClient = useQueryClient()
   return useMutation({
