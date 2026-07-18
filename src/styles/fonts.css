@@ -1,54 +1,70 @@
-/* Fontes do design system — ver wiki/design_system.md
-   - Recoleta (self-hosted, copiada do Moka DS): títulos/display
-   - Barlow (@fontsource): corpo, labels, tabelas, botões
-   - JetBrains Mono (@fontsource): valores monetários e numéricos (tabular figures) */
+/* Fontes do sistema — ver wiki/design_system.md
+   - Plus Jakarta Sans (self-hosted): única fonte do sistema (corpo, títulos, tabelas, valores)
+   - Recoleta (self-hosted): exceção — título das páginas de autenticação (login/registro/senha) */
 
-/* Barlow — corpo/UI */
-@import '@fontsource/barlow/400.css';
-@import '@fontsource/barlow/500.css';
-@import '@fontsource/barlow/600.css';
-@import '@fontsource/barlow/700.css';
+/* Plus Jakarta Sans — fonte única do sistema */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/PLUS-JAKARTA-SANS/PlusJakartaSans-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fonts/PLUS-JAKARTA-SANS/PlusJakartaSans-Italic.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../assets/fonts/PLUS-JAKARTA-SANS/PlusJakartaSans-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../assets/fonts/PLUS-JAKARTA-SANS/PlusJakartaSans-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../assets/fonts/PLUS-JAKARTA-SANS/PlusJakartaSans-Bold.ttf') format('truetype');
+}
 
-/* JetBrains Mono — dados/valores */
-@import '@fontsource/jetbrains-mono/400.css';
-@import '@fontsource/jetbrains-mono/500.css';
-@import '@fontsource/jetbrains-mono/600.css';
-
-/* Recoleta — display/títulos (self-hosted, woff2 em src/assets/fonts) */
+/* Recoleta — exceção: título das páginas de autenticação (self-hosted, woff2 em src/assets/fonts/RECOLETA) */
 @font-face {
   font-family: 'Recoleta';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('../assets/fonts/Recoleta_Regular.woff2') format('woff2');
+  src: url('../assets/fonts/RECOLETA/Recoleta_Regular.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Recoleta';
   font-style: normal;
   font-weight: 500;
   font-display: swap;
-  src: url('../assets/fonts/Recoleta_Medium.woff2') format('woff2');
+  src: url('../assets/fonts/RECOLETA/Recoleta_Medium.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Recoleta';
   font-style: normal;
   font-weight: 600;
   font-display: swap;
-  src: url('../assets/fonts/Recoleta_SemiBold.woff2') format('woff2');
+  src: url('../assets/fonts/RECOLETA/Recoleta_SemiBold.woff2') format('woff2');
 }
 @font-face {
   font-family: 'Recoleta';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('../assets/fonts/Recoleta_Bold.woff2') format('woff2');
-}
-
-/* Recoleta Alt — reservada para wordmark / momentos de marca (Black) */
-@font-face {
-  font-family: 'Recoleta Alt';
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url('../assets/fonts/RecoletaAlt_Black.woff2') format('woff2');
+  src: url('../assets/fonts/RECOLETA/Recoleta_Bold.woff2') format('woff2');
 }

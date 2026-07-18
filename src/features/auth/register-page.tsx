@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/app/auth-context'
+import { PasswordInput } from '@/components/password-input'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -79,9 +80,13 @@ export function RegisterPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1 text-center">
-        <h1 className="font-display text-2xl font-semibold tracking-tight">Criar conta</h1>
-        <p className="text-sm text-muted-foreground">Cadastre a conta da sua igreja.</p>
+      <div className="flex flex-col gap-2">
+        <h1 className="font-display text-3xl leading-tight font-semibold tracking-tight text-foreground">
+          Crie sua conta e organize as finanças da sua igreja.
+        </h1>
+        <p className="text-base text-muted-foreground">
+          Preencha os dados abaixo para começar.
+        </p>
       </div>
 
       <Form {...form}>
@@ -141,7 +146,7 @@ export function RegisterPage() {
               <FormItem>
                 <FormLabel>Senha</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" {...field} />
+                  <PasswordInput autoComplete="new-password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -155,7 +160,7 @@ export function RegisterPage() {
               <FormItem>
                 <FormLabel>Confirmar Senha</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" {...field} />
+                  <PasswordInput autoComplete="new-password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -183,7 +188,7 @@ export function RegisterPage() {
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
+          <Button type="submit" size="lg" className="w-full" disabled={registerMutation.isPending}>
             {registerMutation.isPending ? 'Criando conta...' : 'Criar conta'}
           </Button>
         </form>

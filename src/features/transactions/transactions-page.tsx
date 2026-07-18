@@ -123,7 +123,7 @@ export function TransactionsPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold tracking-tight">Transações</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Transações</h1>
         <p className="text-sm text-muted-foreground">Lançamentos de entradas e saídas da igreja.</p>
       </div>
 

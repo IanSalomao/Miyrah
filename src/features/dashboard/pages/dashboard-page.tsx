@@ -38,7 +38,7 @@ export function DashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold tracking-tight">Dashboard</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
         <p className="text-sm text-muted-foreground">
           Análise financeira com filtros globais — o Saldo é sempre até a data de hoje.
         </p>

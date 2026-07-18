@@ -9,7 +9,7 @@ import { RecentTransactions } from '../components/recent-transactions'
 export function HomePage() {
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="font-display text-2xl font-semibold tracking-tight">Início</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Início</h1>
       <MetricsSection />
       <ChartsSection />
       <RecentTransactions />

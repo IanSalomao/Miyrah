@@ -99,7 +99,7 @@ export function MembersPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-2xl font-semibold tracking-tight">Membros</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Membros</h1>
         <p className="text-sm text-muted-foreground">Cadastro e consulta dos membros da igreja.</p>
       </div>
 

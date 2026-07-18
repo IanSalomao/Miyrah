@@ -29,7 +29,7 @@ export function RecentTransactions() {
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-lg font-semibold">Últimas transações</h2>
+        <h2 className="text-lg font-semibold">Últimas transações</h2>
         <Link
           to="/transactions"
           className="text-sm text-primary underline-offset-4 hover:underline"

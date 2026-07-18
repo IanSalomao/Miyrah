@@ -33,7 +33,7 @@ export function MinistriesPage() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
-        <h1 className="font-display text-2xl font-semibold tracking-tight">Ministérios</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Ministérios</h1>
         <Button onClick={openCreateModal}>
           <Plus className="size-4" />
           Adicionar ministério

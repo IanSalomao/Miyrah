@@ -37,7 +37,7 @@ export function MinistryCard({ ministry, onEdit, onDelete }: MinistryCardProps) 
         </Button>
       </div>
 
-      <h3 className="pr-14 font-display text-lg leading-tight font-semibold">{ministry.name}</h3>
+      <h3 className="pr-14 text-lg leading-tight font-semibold">{ministry.name}</h3>
 
       <p className="text-sm text-muted-foreground">{ministry.description || 'Sem descrição.'}</p>
 

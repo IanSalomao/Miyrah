@@ -58,7 +58,9 @@ export function ForgotPasswordPage() {
       <div className="flex flex-col items-center gap-4 text-center">
         <MailCheck className="size-10 text-primary" aria-hidden="true" />
         <div className="flex flex-col gap-1">
-          <h1 className="font-display text-2xl font-semibold tracking-tight">E-mail enviado</h1>
+          <h1 className="font-display text-3xl leading-tight font-semibold tracking-tight text-foreground">
+            E-mail enviado
+          </h1>
           <p className="text-sm text-muted-foreground">
             Se o e-mail informado existir em nossa base, enviaremos um link de recuperação. Confira
             sua caixa de entrada.
@@ -73,10 +75,12 @@ export function ForgotPasswordPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1 text-center">
-        <h1 className="font-display text-2xl font-semibold tracking-tight">Recuperar senha</h1>
-        <p className="text-sm text-muted-foreground">
-          Informe seu e-mail para receber o link de recuperação.
+      <div className="flex flex-col gap-2">
+        <h1 className="font-display text-3xl leading-tight font-semibold tracking-tight text-foreground">
+          Recuperar o acesso à sua conta.
+        </h1>
+        <p className="text-base text-muted-foreground">
+          Informe seu e-mail e enviaremos um link para redefinir sua senha.
         </p>
       </div>
 
@@ -102,7 +106,12 @@ export function ForgotPasswordPage() {
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={forgotPasswordMutation.isPending}>
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
+            disabled={forgotPasswordMutation.isPending}
+          >
             {forgotPasswordMutation.isPending ? 'Enviando...' : 'Enviar link de recuperação'}
           </Button>
         </form>

@@ -82,7 +82,7 @@ export function PieChart({ data, isLoading = false, title, className }: PieChart
   if (isLoading) {
     return (
       <div className={cn('w-full', className)}>
-        {title ? <h3 className="mb-3 font-display text-base font-semibold">{title}</h3> : null}
+        {title ? <h3 className="mb-3 text-base font-semibold">{title}</h3> : null}
         <div
           role="status"
           aria-label="Carregando gráfico de categorias"
@@ -95,7 +95,7 @@ export function PieChart({ data, isLoading = false, title, className }: PieChart
   if (data.length === 0) {
     return (
       <div className={cn('w-full', className)}>
-        {title ? <h3 className="mb-3 font-display text-base font-semibold">{title}</h3> : null}
+        {title ? <h3 className="mb-3 text-base font-semibold">{title}</h3> : null}
         <div
           className={cn(
             CHART_HEIGHT,
@@ -113,7 +113,7 @@ export function PieChart({ data, isLoading = false, title, className }: PieChart
 
   return (
     <div className={cn('w-full', className)}>
-      {title ? <h3 className="mb-3 font-display text-base font-semibold">{title}</h3> : null}
+      {title ? <h3 className="mb-3 text-base font-semibold">{title}</h3> : null}
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
         <div className={cn(CHART_HEIGHT, 'w-full shrink-0 sm:w-56')}>
           <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 224, height: 224 }}>

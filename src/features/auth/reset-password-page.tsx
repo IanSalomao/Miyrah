@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleCheck, TriangleAlert } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { PasswordInput } from '@/components/password-input'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -13,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { ApiError } from '@/lib/api-client'
 import { useResetPassword } from './hooks/use-reset-password'
 import { resetPasswordSchema, type ResetPasswordFormValues } from './schemas'
@@ -77,7 +77,7 @@ export function ResetPasswordPage() {
       <div className="flex flex-col items-center gap-4 text-center">
         <TriangleAlert className="size-10 text-destructive" aria-hidden="true" />
         <div className="flex flex-col gap-1">
-          <h1 className="font-display text-2xl font-semibold tracking-tight">
+          <h1 className="font-display text-3xl leading-tight font-semibold tracking-tight text-foreground">
             Link inválido ou expirado
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -85,7 +85,7 @@ export function ResetPasswordPage() {
             continuar.
           </p>
         </div>
-        <Button asChild className="w-full">
+        <Button asChild size="lg" className="w-full">
           <Link to="/forgot-password">Solicitar novo link</Link>
         </Button>
       </div>
@@ -97,7 +97,7 @@ export function ResetPasswordPage() {
       <div className="flex flex-col items-center gap-4 text-center">
         <CircleCheck className="size-10 text-income" aria-hidden="true" />
         <div className="flex flex-col gap-1">
-          <h1 className="font-display text-2xl font-semibold tracking-tight">
+          <h1 className="font-display text-3xl leading-tight font-semibold tracking-tight text-foreground">
             Senha alterada com sucesso
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -113,9 +113,11 @@ export function ResetPasswordPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1 text-center">
-        <h1 className="font-display text-2xl font-semibold tracking-tight">Defina nova senha</h1>
-        <p className="text-sm text-muted-foreground">Escolha uma nova senha para sua conta.</p>
+      <div className="flex flex-col gap-2">
+        <h1 className="font-display text-3xl leading-tight font-semibold tracking-tight text-foreground">
+          Defina nova senha
+        </h1>
+        <p className="text-base text-muted-foreground">Escolha uma nova senha para sua conta.</p>
       </div>
 
       <Form {...form}>
@@ -133,7 +135,7 @@ export function ResetPasswordPage() {
               <FormItem>
                 <FormLabel>Nova Senha</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" {...field} />
+                  <PasswordInput autoComplete="new-password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -147,14 +149,19 @@ export function ResetPasswordPage() {
               <FormItem>
                 <FormLabel>Confirmar Nova Senha</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="new-password" {...field} />
+                  <PasswordInput autoComplete="new-password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={resetPasswordMutation.isPending}>
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
+            disabled={resetPasswordMutation.isPending}
+          >
             {resetPasswordMutation.isPending ? 'Salvando...' : 'Salvar nova senha'}
           </Button>
         </form>

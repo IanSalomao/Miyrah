@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/app/auth-context'
+import { PasswordInput } from '@/components/password-input'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -60,9 +61,12 @@ export function LoginPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-1 text-center">
-        <h1 className="font-display text-2xl font-semibold tracking-tight">Entrar</h1>
-        <p className="text-sm text-muted-foreground">Acesse a conta da sua igreja.</p>
+      <div className="flex flex-col gap-2">
+        <h1 className="font-display text-3xl leading-tight font-semibold tracking-tight text-foreground">
+          Bem-vindo ao melhor lugar{' '}
+          <span className="font-normal">para cuidar das finanças da sua igreja.</span>
+        </h1>
+        <p className="text-base text-muted-foreground">Faça login na sua conta para continuar.</p>
       </div>
 
       <Form {...form}>
@@ -94,7 +98,7 @@ export function LoginPage() {
               <FormItem>
                 <FormLabel>Senha</FormLabel>
                 <FormControl>
-                  <Input type="password" autoComplete="current-password" {...field} />
+                  <PasswordInput autoComplete="current-password" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -117,7 +121,7 @@ export function LoginPage() {
             )}
           />
 
-          <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
+          <Button type="submit" size="lg" className="w-full" disabled={loginMutation.isPending}>
             {loginMutation.isPending ? 'Entrando...' : 'Entrar'}
           </Button>
         </form>
