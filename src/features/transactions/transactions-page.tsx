@@ -2,20 +2,12 @@
 // Único lugar do sistema onde uma transação é lançada.
 
 import { useState } from 'react'
-import { PencilIcon, Trash2Icon } from 'lucide-react'
-import {
-  DataTable,
-  type DataTableColumn,
-  type DataTableRowAction,
-} from '@/components/data-table/data-table'
 import { MetricCard } from '@/components/metric-card/metric-card'
 import { ConfirmModal } from '@/components/modal-form/confirm-modal'
-import { cn } from '@/lib/utils'
 import { formatDate } from '@/lib/format'
 import type { Transaction } from '@/types'
 import { TransactionsFilterBar } from './components/transactions-filter-bar'
-import { TransactionAmountCell } from './components/transaction-amount-cell'
-import { TransactionLinkedCell } from './components/transaction-linked-cell'
+import { TransactionRowList } from './components/transaction-row-list'
 import { TransactionFormModal } from './components/transaction-form-modal'
 import { useCategoriesOptions } from './hooks/use-categories-options'
 import { useTransactionsQuery, type TransactionsFilters } from './hooks/use-transactions-query'
@@ -63,61 +55,6 @@ export function TransactionsPage() {
     setDeletingTransaction(null)
   }
 
-  const columns: DataTableColumn<Transaction>[] = [
-    {
-      id: 'date',
-      header: 'Data',
-      cell: (row) => formatDate(row.date),
-    },
-    {
-      id: 'description',
-      header: 'Descrição',
-      cell: (row) => row.description || <span className="text-muted-foreground">—</span>,
-    },
-    {
-      id: 'category',
-      header: 'Categoria',
-      cell: (row) => (
-        <div className="flex items-center gap-2">
-          <span
-            aria-hidden="true"
-            className="inline-block size-2.5 shrink-0 rounded-full"
-            style={{ backgroundColor: row.category.color }}
-          />
-          <span className={cn(row.category.deleted && 'text-muted-foreground italic')}>
-            {row.category.name}
-            {row.category.deleted && ' (excluído)'}
-          </span>
-        </div>
-      ),
-    },
-    {
-      id: 'linked',
-      header: 'Membro/Ministério',
-      cell: (row) => <TransactionLinkedCell member={row.member} ministry={row.ministry} />,
-    },
-    {
-      id: 'value',
-      header: 'Valor',
-      numeric: true,
-      cell: (row) => <TransactionAmountCell value={row.value} />,
-    },
-  ]
-
-  const rowActions: DataTableRowAction<Transaction>[] = [
-    {
-      label: 'Editar transação',
-      icon: PencilIcon,
-      onClick: (row) => openEditModal(row),
-    },
-    {
-      label: 'Excluir transação',
-      icon: Trash2Icon,
-      variant: 'destructive',
-      onClick: (row) => setDeletingTransaction(row),
-    },
-  ]
-
   const metrics = metricsQuery.data ?? { income: 0, expense: 0, balance: 0 }
 
   return (
@@ -155,36 +92,31 @@ export function TransactionsPage() {
         onAddTransaction={openCreateModal}
       />
 
-      <div className="flex flex-col gap-3">
-        <DataTable
-          columns={columns}
-          data={transactionsQuery.data?.items ?? []}
-          getRowId={(row) => row.id}
-          isLoading={transactionsQuery.isLoading}
-          error={
-            transactionsQuery.isError ? 'Não foi possível carregar as transações.' : null
-          }
-          onRetry={() => transactionsQuery.refetch()}
-          rowActions={rowActions}
-          emptyState={{
-            title: 'Nenhuma transação encontrada',
-            actionLabel: 'Adicionar transação',
-            onAction: openCreateModal,
-          }}
-          pagination={
-            transactionsQuery.data
-              ? {
-                  page: transactionsQuery.data.meta.page,
-                  limit: transactionsQuery.data.meta.limit,
-                  total: transactionsQuery.data.meta.total,
-                  totalPages: transactionsQuery.data.meta.totalPages,
-                  onPageChange: (page) => patchFilters({ page }),
-                  onLimitChange: (limit) => patchFilters({ limit, page: 1 }),
-                }
-              : undefined
-          }
-        />
-      </div>
+      <TransactionRowList
+        transactions={transactionsQuery.data?.items ?? []}
+        isLoading={transactionsQuery.isLoading}
+        error={transactionsQuery.isError ? 'Não foi possível carregar as transações.' : null}
+        onRetry={() => transactionsQuery.refetch()}
+        onEdit={openEditModal}
+        onDelete={(transaction) => setDeletingTransaction(transaction)}
+        emptyState={{
+          title: 'Nenhuma transação encontrada',
+          actionLabel: 'Adicionar transação',
+          onAction: openCreateModal,
+        }}
+        pagination={
+          transactionsQuery.data
+            ? {
+                page: transactionsQuery.data.meta.page,
+                limit: transactionsQuery.data.meta.limit,
+                total: transactionsQuery.data.meta.total,
+                totalPages: transactionsQuery.data.meta.totalPages,
+                onPageChange: (page) => patchFilters({ page }),
+                onLimitChange: (limit) => patchFilters({ limit, page: 1 }),
+              }
+            : undefined
+        }
+      />
 
       <TransactionFormModal
         open={formModal.open}
