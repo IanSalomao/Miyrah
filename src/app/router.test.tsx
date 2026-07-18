@@ -25,14 +25,18 @@ afterEach(() => {
 describe('roteamento', () => {
   it('renderiza /login no shell de autenticação', async () => {
     renderAt('/login')
-    expect(await screen.findByRole('heading', { name: 'Entrar' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: /Bem-vindo ao melhor lugar/ }),
+    ).toBeInTheDocument()
     // O shell de auth não tem sidebar.
     expect(screen.queryByRole('link', { name: 'Transações' })).not.toBeInTheDocument()
   })
 
   it('redireciona rota protegida para /login quando não autenticado', async () => {
     renderAt('/')
-    expect(await screen.findByRole('heading', { name: 'Entrar' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { name: /Bem-vindo ao melhor lugar/ }),
+    ).toBeInTheDocument()
   })
 
   it('renderiza a tela protegida com a sidebar quando autenticado', async () => {

@@ -47,7 +47,7 @@ export const routes: RouteObject[] = [
     path: '*',
     element: (
       <div className="flex min-h-svh flex-col items-center justify-center gap-3 bg-background px-4 text-center">
-        <h1 className="font-display text-3xl font-semibold">Página não encontrada</h1>
+        <h1 className="text-3xl font-semibold">Página não encontrada</h1>
         <Link to="/" className="text-primary underline-offset-4 hover:underline">
           Voltar para o início
         </Link>
