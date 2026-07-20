@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
   ArrowRightLeft,
+  ChevronLeft,
   Church,
   FileText,
   Home,
@@ -13,6 +14,11 @@ import {
 import type { ComponentType } from 'react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/app/auth-context'
+import { MemberAvatar } from '@/components/avatar/avatar'
+import miyrahLogo from '@/assets/miyrah_logo_blue.svg'
+import miyrahIcon from '@/assets/miyrah_icon_blue.svg'
+import { useAccount } from './hooks/use-account'
+import { useSidebarCollapsed } from './hooks/use-sidebar-collapsed'
 
 interface NavItem {
   to: string
@@ -33,9 +39,14 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/settings', label: 'Configurações', icon: Settings },
 ]
 
+export const SIDEBAR_WIDTH_EXPANDED = 'w-60'
+export const SIDEBAR_WIDTH_COLLAPSED = 'w-20'
+
 export function SideBar() {
   const navigate = useNavigate()
   const { logout } = useAuth()
+  const { data: account } = useAccount()
+  const { collapsed, setCollapsed } = useSidebarCollapsed()
 
   function handleLogout() {
     logout()
@@ -43,44 +54,118 @@ export function SideBar() {
   }
 
   return (
-    <aside className="flex h-svh w-60 shrink-0 flex-col border-r border-border bg-sidebar">
-      <div className="flex flex-col gap-0.5 px-6 py-6">
-        <span className="text-lg font-semibold tracking-tight text-primary">
-          Miyrah
-        </span>
-        <span className="text-xs text-muted-foreground">Controle financeiro</span>
+    <aside
+      className={cn(
+        'fixed inset-y-0 left-0 z-30 flex h-svh flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-300 ease-in-out',
+        collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED,
+      )}
+    >
+      <button
+        type="button"
+        onClick={() => setCollapsed((value) => !value)}
+        aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+        className="absolute -right-3 top-8 z-10 flex size-6 items-center justify-center rounded-full border border-sidebar-border bg-sidebar shadow-sm transition-colors hover:bg-sidebar-accent"
+      >
+        <ChevronLeft
+          className={cn(
+            'size-3.5 text-muted-foreground transition-transform duration-300',
+            collapsed && 'rotate-180',
+          )}
+        />
+      </button>
+
+      <div className="relative flex h-20 shrink-0 items-center justify-center overflow-hidden px-4">
+        <img
+          src={miyrahLogo}
+          alt="Miyrah"
+          className={cn(
+            'absolute h-7 w-auto transition-all duration-300',
+            collapsed ? 'scale-95 opacity-0' : 'scale-100 opacity-100',
+          )}
+        />
+        <img
+          src={miyrahIcon}
+          alt="Miyrah"
+          className={cn(
+            'absolute size-8 transition-all duration-300',
+            collapsed ? 'scale-100 opacity-100' : 'scale-95 opacity-0',
+          )}
+        />
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1 px-3">
+      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto overflow-x-hidden px-3">
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.end}
+            title={collapsed ? item.label : undefined}
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 rounded-md px-3 py-2 text-sm outline-none transition-colors',
                 'hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-ring',
+                collapsed && 'justify-center',
                 isActive
                   ? 'bg-sidebar-accent font-medium text-sidebar-primary'
                   : 'text-sidebar-foreground',
               )
             }
           >
-            <item.icon className="size-4" />
-            {item.label}
+            <item.icon className="size-4 shrink-0" />
+            <span
+              className={cn(
+                'overflow-hidden whitespace-nowrap transition-all duration-300',
+                collapsed ? 'max-w-0 opacity-0' : 'max-w-40 opacity-100',
+              )}
+            >
+              {item.label}
+            </span>
           </NavLink>
         ))}
       </nav>
 
-      <div className="px-3 py-4">
+      <div className="shrink-0 border-t border-sidebar-border px-3 py-4">
+        <div
+          className={cn(
+            'flex items-center gap-3 overflow-hidden rounded-md px-1 py-1 transition-all duration-300',
+            collapsed ? 'justify-center' : 'justify-start',
+          )}
+        >
+          <MemberAvatar name={account?.name ?? ''} className="shrink-0" />
+          <div
+            className={cn(
+              'flex min-w-0 flex-col overflow-hidden whitespace-nowrap transition-all duration-300',
+              collapsed ? 'max-w-0 opacity-0' : 'max-w-40 opacity-100',
+            )}
+          >
+            <span className="truncate text-sm font-medium text-sidebar-foreground">
+              {account?.name ?? '—'}
+            </span>
+            <span className="truncate text-xs text-muted-foreground">
+              {account?.email ?? ''}
+            </span>
+          </div>
+        </div>
+
         <button
           type="button"
           onClick={handleLogout}
-          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-ring"
+          title={collapsed ? 'Sair' : undefined}
+          className={cn(
+            'mt-2 flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-sidebar-foreground outline-none transition-colors',
+            'hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-ring',
+            collapsed && 'justify-center',
+          )}
         >
-          <LogOut className="size-4" />
-          Sair
+          <LogOut className="size-4 shrink-0" />
+          <span
+            className={cn(
+              'overflow-hidden whitespace-nowrap transition-all duration-300',
+              collapsed ? 'max-w-0 opacity-0' : 'max-w-40 opacity-100',
+            )}
+          >
+            Sair
+          </span>
         </button>
       </div>
     </aside>
