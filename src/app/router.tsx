@@ -10,6 +10,7 @@ import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { HomePage } from '@/features/home/pages/home-page'
 import { MembersPage } from '@/features/members/members-page'
 import { MinistriesPage } from '@/features/ministries/pages/ministries-page'
+import { SettingsPage } from '@/features/settings/settings-page'
 import { TransactionsPage } from '@/features/transactions/transactions-page'
 import { ProtectedLayout } from './protected-layout'
 import { ProtectedRoute } from './protected-route'
@@ -38,7 +39,7 @@ export const routes: RouteObject[] = [
           { path: 'ministries', element: <MinistriesPage /> },
           { path: 'categories', element: <CategoriesPage /> },
           { path: 'reports', element: <PagePlaceholder title="Relatórios" /> },
-          { path: 'settings', element: <PagePlaceholder title="Configurações" /> },
+          { path: 'settings', element: <SettingsPage /> },
         ],
       },
     ],
