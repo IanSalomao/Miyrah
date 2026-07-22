@@ -6,6 +6,7 @@ import { HomePage } from './home-page'
 import type {
   Category,
   DashboardCharts,
+  DashboardComparison,
   DashboardSummary,
   Ministry,
   Paginated,
@@ -61,9 +62,19 @@ const categoriesPage: Paginated<Category> = {
   meta: { page: 1, limit: 20, total: 0, totalPages: 0 },
 }
 
+const comparison: DashboardComparison = {
+  groupBy: 'month',
+  buckets: [
+    { periodStart: '2026-02-01', label: 'Fev/26', income: 4000, expense: 2500 },
+    { periodStart: '2026-03-01', label: 'Mar/26', income: 4500, expense: 2800 },
+  ],
+  comparison: { sampleSize: 1, incomeVsAvg: 12.5, expenseVsAvg: -8.2 },
+}
+
 vi.mock('@/services', () => ({
   getDashboardSummary: vi.fn(() => Promise.resolve(summary)),
   getDashboardCharts: vi.fn(() => Promise.resolve(charts)),
+  getDashboardComparison: vi.fn(() => Promise.resolve(comparison)),
   listTransactions: vi.fn(() => Promise.resolve(recentTransactions)),
   listCategories: vi.fn(() => Promise.resolve(categoriesPage)),
   listMembers: vi.fn(() => Promise.resolve({ items: [], meta: { page: 1, limit: 20, total: 0, totalPages: 0 } })),

@@ -1,39 +1,65 @@
 // Início — wiki/pages/page_home.md
-// component_line_chart (entradas/saídas por dia) + 2x component_pie_chart
-// (entradas por categoria, saídas por categoria), todos do mês atual.
+// component_line_chart (entradas/saídas por dia, mês atual) + component_bar_chart
+// (comparativo entrada x saída dos últimos 6 meses, sem toggle de agrupamento).
 
+import { BarChart } from '@/components/bar-chart/bar-chart'
 import { LineChart } from '@/components/line-chart/line-chart'
-import { PieChart } from '@/components/pie-chart/pie-chart'
 import { ApiError } from '@/lib/api-client'
 import { useDashboardCharts } from '../hooks/use-dashboard-charts'
+import { useDashboardComparison } from '../hooks/use-dashboard-comparison'
 import { BlockError } from './block-error'
 
 export function ChartsSection() {
-  const { data, isLoading, isError, error, refetch } = useDashboardCharts()
+  const {
+    data: charts,
+    isLoading: isChartsLoading,
+    isError: isChartsError,
+    error: chartsError,
+    refetch: refetchCharts,
+  } = useDashboardCharts()
 
-  if (isError) {
-    return (
-      <BlockError
-        message={error instanceof ApiError ? error.message : 'Não foi possível carregar os gráficos.'}
-        onRetry={() => void refetch()}
-      />
-    )
-  }
+  const {
+    data: comparison,
+    isLoading: isComparisonLoading,
+    isError: isComparisonError,
+    error: comparisonError,
+    refetch: refetchComparison,
+  } = useDashboardComparison()
 
   return (
-    <section className="flex flex-col gap-4">
-      <LineChart data={data?.line ?? []} isLoading={isLoading} />
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <PieChart
-          title="Entradas por categoria"
-          data={data?.incomeByCategory ?? []}
-          isLoading={isLoading}
-        />
-        <PieChart
-          title="Saídas por categoria"
-          data={data?.expenseByCategory ?? []}
-          isLoading={isLoading}
-        />
+    <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <div className="lg:col-span-2">
+        {isChartsError ? (
+          <BlockError
+            message={
+              chartsError instanceof ApiError
+                ? chartsError.message
+                : 'Não foi possível carregar os gráficos.'
+            }
+            onRetry={() => void refetchCharts()}
+          />
+        ) : (
+          <LineChart data={charts?.line ?? []} isLoading={isChartsLoading} />
+        )}
+      </div>
+      <div className="lg:col-span-1">
+        {isComparisonError ? (
+          <BlockError
+            message={
+              comparisonError instanceof ApiError
+                ? comparisonError.message
+                : 'Não foi possível carregar os gráficos.'
+            }
+            onRetry={() => void refetchComparison()}
+          />
+        ) : (
+          <BarChart
+            data={comparison?.buckets ?? []}
+            comparison={comparison?.comparison}
+            isLoading={isComparisonLoading}
+            title="Últimos 6 meses"
+          />
+        )}
       </div>
     </section>
   )
