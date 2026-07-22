@@ -6,7 +6,9 @@ import { useState } from 'react'
 import { MetricCard } from '@/components/metric-card'
 import { LineChart } from '@/components/line-chart'
 import { PieChart } from '@/components/pie-chart'
+import { BarChart } from '@/components/bar-chart'
 import { ApiError } from '@/lib/api-client'
+import type { ComparisonGroupBy } from '@/types'
 import { DashboardFilterBar } from '../components/dashboard-filter-bar'
 import { BlockError } from '../components/block-error'
 import {
@@ -17,6 +19,7 @@ import {
 import { buildExtraMetricCards, buildMainMetricCards } from '../summary-cards'
 import { useDashboardSummary } from '../hooks/use-dashboard-summary'
 import { useDashboardCharts } from '../hooks/use-dashboard-charts'
+import { useDashboardComparison } from '../hooks/use-dashboard-comparison'
 import { useDashboardFilterOptions } from '../hooks/use-dashboard-filter-options'
 
 function errorMessage(error: unknown): string | undefined {
@@ -28,9 +31,12 @@ export function DashboardPage() {
   const filters = toDashboardFilters(filterState)
   const filtersReady = isDashboardFiltersReady(filters)
 
+  const [groupBy, setGroupBy] = useState<ComparisonGroupBy>('month')
+
   const { categories, ministries } = useDashboardFilterOptions()
   const summaryQuery = useDashboardSummary(filters)
   const chartsQuery = useDashboardCharts(filters)
+  const comparisonQuery = useDashboardComparison(filters, groupBy)
 
   const mainCards = buildMainMetricCards(summaryQuery.data)
   const extraCards = buildExtraMetricCards(summaryQuery.data)
@@ -84,6 +90,25 @@ export function DashboardPage() {
           ) : (
             <>
               <LineChart data={chartsQuery.data?.line ?? []} isLoading={chartsQuery.isPending} />
+
+              {comparisonQuery.isError ? (
+                <BlockError
+                  message={
+                    errorMessage(comparisonQuery.error) ??
+                    'Não foi possível carregar o comparativo por período.'
+                  }
+                  onRetry={() => comparisonQuery.refetch()}
+                />
+              ) : (
+                <BarChart
+                  data={comparisonQuery.data?.buckets ?? []}
+                  comparison={comparisonQuery.data?.comparison}
+                  isLoading={comparisonQuery.isPending}
+                  groupBy={groupBy}
+                  onGroupByChange={setGroupBy}
+                  title="Comparativo por período"
+                />
+              )}
 
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <PieChart
