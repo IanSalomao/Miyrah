@@ -3,6 +3,7 @@
 
 import type {
   CategoriesQuery,
+  ComparisonGroupBy,
   DashboardFilters,
   MembersQuery,
   ReportsQuery,
@@ -33,6 +34,8 @@ export const queryKeys = {
     all: ['dashboard'] as const,
     summary: (filters: DashboardFilters) => ['dashboard', 'summary', filters] as const,
     charts: (filters: DashboardFilters) => ['dashboard', 'charts', filters] as const,
+    comparison: (filters: DashboardFilters, groupBy: ComparisonGroupBy) =>
+      ['dashboard', 'comparison', filters, groupBy] as const,
   },
   reports: {
     all: ['reports'] as const,
