@@ -1,5 +1,6 @@
 // Início — wiki/pages/page_home.md, wiki/api/dashboard.md
 // GET /v1/dashboard/summary sem filtros = mês atual (currentMonth implícito).
+// Alimenta Entradas/Saídas/Balanço do Mês — o Saldo em Conta vem de use-dashboard-balance.
 
 import { useQuery } from '@tanstack/react-query'
 import { getDashboardSummary } from '@/services'

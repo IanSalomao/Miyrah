@@ -99,8 +99,8 @@
   --navy: #1b2f9e; /* Tom escuro de apoio (charts, momentos) */
   --linha: #d9d6cc; /* Contorno padrão, bem definido */
   --linha-forte: #b6c0c4; /* Contorno de ênfase */
-  --entradas: #1f7a54; /* Semântico — valores de entrada (+), sóbrio */
-  --saidas: #b5443a; /* Semântico — valores de saída (−), vermelho-tijolo */
+  --entradas: #1f9d5f; /* Semântico — valores de entrada (+) */
+  --saidas: #e0524d; /* Semântico — valores de saída (−) */
 
   /* Papel → fundo; Tinta → texto */
   --background: var(--papel);

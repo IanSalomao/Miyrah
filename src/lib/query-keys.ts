@@ -5,6 +5,7 @@ import type {
   CategoriesQuery,
   ComparisonGroupBy,
   DashboardFilters,
+  LineGranularity,
   MembersQuery,
   ReportsQuery,
   TransactionsQuery,
@@ -32,8 +33,14 @@ export const queryKeys = {
   },
   dashboard: {
     all: ['dashboard'] as const,
+    balance: () => ['dashboard', 'balance'] as const,
     summary: (filters: DashboardFilters) => ['dashboard', 'summary', filters] as const,
-    charts: (filters: DashboardFilters) => ['dashboard', 'charts', filters] as const,
+    counts: () => ['dashboard', 'counts'] as const,
+    balanceVariation: (dateFrom: string, dateTo: string) =>
+      ['dashboard', 'balance-variation', dateFrom, dateTo] as const,
+    line: (filters: DashboardFilters, granularity: LineGranularity) =>
+      ['dashboard', 'line', filters, granularity] as const,
+    byCategory: (filters: DashboardFilters) => ['dashboard', 'by-category', filters] as const,
     comparison: (filters: DashboardFilters, groupBy: ComparisonGroupBy) =>
       ['dashboard', 'comparison', filters, groupBy] as const,
   },

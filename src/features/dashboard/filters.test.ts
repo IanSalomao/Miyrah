@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   DEFAULT_DASHBOARD_FILTER_STATE,
   isDashboardFiltersReady,
+  resolveBalanceVariationRange,
   toDashboardFilters,
   type DashboardFilterState,
 } from './filters'
@@ -63,5 +64,59 @@ describe('isDashboardFiltersReady', () => {
       isDashboardFiltersReady({ period: 'custom', dateFrom: '2026-01-01', dateTo: '2026-01-31' }),
     ).toBe(true)
     expect(isDashboardFiltersReady({ period: 'custom' })).toBe(false)
+  })
+})
+
+describe('resolveBalanceVariationRange', () => {
+  const TODAY = new Date(2026, 6, 23) // 2026-07-23 (mês local, sem bug de fuso)
+
+  it('period=custom repassa as próprias datas do filtro', () => {
+    const range = resolveBalanceVariationRange(
+      { period: 'custom', dateFrom: '2026-02-10', dateTo: '2026-03-15' },
+      TODAY,
+    )
+    expect(range).toEqual({ dateFrom: '2026-02-10', dateTo: '2026-03-15' })
+  })
+
+  it('currentMonth: início do mês atual até hoje', () => {
+    expect(resolveBalanceVariationRange({ period: 'currentMonth' }, TODAY)).toEqual({
+      dateFrom: '2026-07-01',
+      dateTo: '2026-07-23',
+    })
+  })
+
+  it('last3Months: início do mês 2 meses atrás até hoje', () => {
+    expect(resolveBalanceVariationRange({ period: 'last3Months' }, TODAY)).toEqual({
+      dateFrom: '2026-05-01',
+      dateTo: '2026-07-23',
+    })
+  })
+
+  it('last6Months: início do mês 5 meses atrás até hoje', () => {
+    expect(resolveBalanceVariationRange({ period: 'last6Months' }, TODAY)).toEqual({
+      dateFrom: '2026-02-01',
+      dateTo: '2026-07-23',
+    })
+  })
+
+  it('last12Months: início do mês 11 meses atrás até hoje (cruzando o ano)', () => {
+    expect(resolveBalanceVariationRange({ period: 'last12Months' }, TODAY)).toEqual({
+      dateFrom: '2025-08-01',
+      dateTo: '2026-07-23',
+    })
+  })
+
+  it('currentYear: 1º de janeiro do ano atual até hoje', () => {
+    expect(resolveBalanceVariationRange({ period: 'currentYear' }, TODAY)).toEqual({
+      dateFrom: '2026-01-01',
+      dateTo: '2026-07-23',
+    })
+  })
+
+  it('sem period definido (Início) equivale a currentMonth', () => {
+    expect(resolveBalanceVariationRange({}, TODAY)).toEqual({
+      dateFrom: '2026-07-01',
+      dateTo: '2026-07-23',
+    })
   })
 })

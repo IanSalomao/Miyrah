@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  formatCompactNumber,
   formatCurrency,
   formatDate,
   formatDateTime,
@@ -34,6 +35,24 @@ describe('formatSignedCurrency', () => {
   it('usa o sinal tipográfico − (U+2212), não o hífen', () => {
     expect(formatSignedCurrency(-10)).toContain('−')
     expect(formatSignedCurrency(-10)).not.toContain('-')
+  })
+})
+
+describe('formatCompactNumber', () => {
+  it('abrevia milhares com "k" e milhões com "mi"', () => {
+    expect(formatCompactNumber(5000)).toBe('5k')
+    expect(formatCompactNumber(15000)).toBe('15k')
+    expect(formatCompactNumber(12500)).toBe('12,5k')
+    expect(formatCompactNumber(1_500_000)).toBe('1,5mi')
+  })
+
+  it('mantém valores abaixo de mil como inteiros e zero como "0"', () => {
+    expect(formatCompactNumber(0)).toBe('0')
+    expect(formatCompactNumber(950)).toBe('950')
+  })
+
+  it('preserva o sinal tipográfico − para negativos', () => {
+    expect(formatCompactNumber(-15000)).toBe('−15k')
   })
 })
 

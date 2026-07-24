@@ -1,23 +1,22 @@
-// Mapeia DashboardSummary para os dados dos component_metric_card da tela.
-// Regra crítica (wiki/pages/page_dashboard.md, wiki/api/dashboard.md): o card Saldo
-// usa `balance` (líquido "até a data", não afetado pelo filtro de período) — distinto
-// do card Balanço, que usa `periodBalance` (recalculado pelos filtros ativos).
+// Mapeia os endpoints granulares do dashboard para os dados dos component_metric_card
+// da tela. Ver wiki/pages/page_dashboard.md, wiki/api/dashboard.md.
+// Regra crítica: o card Saldo (isolado, GET /dashboard/balance) fica fora deste
+// módulo — é renderizado direto na página, pois não pertence a nenhum dos blocos
+// recalculados pelo filtro.
 
-import { formatCurrency } from '@/lib/format'
-import type { DashboardSummary } from '@/types'
+import type { DashboardBalanceVariation, DashboardCounts, DashboardSummary } from '@/types'
 import type { MetricCardVariant } from '@/components/metric-card'
 
 export interface MetricCardData {
-  key: 'balance' | 'income' | 'expense' | 'periodBalance'
+  key: 'income' | 'expense' | 'periodBalance'
   label: string
   value: number
   variant: MetricCardVariant
 }
 
-/** Os 4 cards principais — todos recalculados pelos filtros, exceto Saldo. */
-export function buildMainMetricCards(summary: DashboardSummary | undefined): MetricCardData[] {
+/** Bloco de métricas do período (Entradas/Saídas/Balanço) — recalculado pelos filtros. */
+export function buildPeriodMetricCards(summary: DashboardSummary | undefined): MetricCardData[] {
   return [
-    { key: 'balance', label: 'Saldo', value: summary?.balance ?? 0, variant: 'balance' },
     { key: 'income', label: 'Entradas', value: summary?.income ?? 0, variant: 'income' },
     { key: 'expense', label: 'Saídas', value: summary?.expense ?? 0, variant: 'expense' },
     {
@@ -29,38 +28,51 @@ export function buildMainMetricCards(summary: DashboardSummary | undefined): Met
   ]
 }
 
-export interface ExtraMetricCardData {
-  key: 'membersCount' | 'transactionsCount' | 'ministriesCount' | 'averageTicket'
+export interface BalanceVariationCardData {
+  key: 'balanceStart' | 'balanceEnd'
   label: string
   value: number
-  formatValue?: (value: number) => string
+  variant: MetricCardVariant
+  /** Só o card de fim traz o indicador; `undefined` = sem indicador nenhum. */
+  percentChange?: number | null
 }
 
-/** Os 4 cards extras — sempre totais gerais, nunca afetados pelos filtros. */
-export function buildExtraMetricCards(
-  summary: DashboardSummary | undefined,
-): ExtraMetricCardData[] {
+/**
+ * Saldo no início/fim do período (`GET /dashboard/balance-variation`) — a variação
+ * percentual (seta ↑/↓, verde/vermelho) aparece só no card de fim; `percentChange`
+ * `null` (saldo inicial 0) renderiza o estado neutro no `MetricCard`.
+ */
+export function buildBalanceVariationCards(
+  data: DashboardBalanceVariation | undefined,
+): BalanceVariationCardData[] {
   return [
     {
-      key: 'membersCount',
-      label: 'Membros cadastrados',
-      value: summary?.membersCount ?? 0,
+      key: 'balanceStart',
+      label: 'Saldo no início do período',
+      value: data?.balanceStart ?? 0,
+      variant: 'balance',
     },
     {
-      key: 'transactionsCount',
-      label: 'Transações',
-      value: summary?.transactionsCount ?? 0,
+      key: 'balanceEnd',
+      label: 'Saldo no fim do período',
+      value: data?.balanceEnd ?? 0,
+      variant: 'balance',
+      percentChange: data ? data.percentChange : undefined,
     },
-    {
-      key: 'ministriesCount',
-      label: 'Ministérios cadastrados',
-      value: summary?.ministriesCount ?? 0,
-    },
-    {
-      key: 'averageTicket',
-      label: 'Ticket médio',
-      value: summary?.averageTicket ?? 0,
-      formatValue: formatCurrency,
-    },
+  ]
+}
+
+export interface ExtraMetricCardData {
+  key: 'membersCount' | 'ministriesCount' | 'categoriesCount'
+  label: string
+  value: number
+}
+
+/** Os 3 cards extras — sempre totais gerais (`GET /dashboard/counts`), sem filtro. */
+export function buildExtraMetricCards(counts: DashboardCounts | undefined): ExtraMetricCardData[] {
+  return [
+    { key: 'membersCount', label: 'Membros cadastrados', value: counts?.membersCount ?? 0 },
+    { key: 'ministriesCount', label: 'Ministérios cadastrados', value: counts?.ministriesCount ?? 0 },
+    { key: 'categoriesCount', label: 'Categorias cadastradas', value: counts?.categoriesCount ?? 0 },
   ]
 }

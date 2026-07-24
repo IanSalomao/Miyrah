@@ -1,63 +1,83 @@
 import { describe, expect, it } from 'vitest'
-import { buildExtraMetricCards, buildMainMetricCards } from './summary-cards'
-import type { DashboardSummary } from '@/types'
+import { buildBalanceVariationCards, buildExtraMetricCards, buildPeriodMetricCards } from './summary-cards'
+import type { DashboardBalanceVariation, DashboardCounts, DashboardSummary } from '@/types'
 
 const SUMMARY: DashboardSummary = {
-  balance: 18500,
   income: 5000,
   expense: 3200,
   periodBalance: 1800,
-  membersCount: 87,
-  transactionsCount: 342,
-  ministriesCount: 6,
-  averageTicket: 245.5,
+  incomeCount: 42,
+  expenseCount: 30,
+  transactionsCount: 72,
 }
 
-describe('buildMainMetricCards', () => {
-  it('o card Saldo usa balance (cumulativo), distinto de periodBalance', () => {
-    const cards = buildMainMetricCards(SUMMARY)
-    const saldo = cards.find((card) => card.key === 'balance')
-    const balanco = cards.find((card) => card.key === 'periodBalance')
-    expect(saldo?.value).toBe(18500)
-    expect(balanco?.value).toBe(1800)
-    expect(saldo?.value).not.toBe(balanco?.value)
-  })
+const COUNTS: DashboardCounts = {
+  membersCount: 87,
+  ministriesCount: 6,
+  categoriesCount: 14,
+}
 
-  it('Saldo e Balanço usam a variante balance (cor pelo sinal); Entradas/Saídas usam suas variantes', () => {
-    const cards = buildMainMetricCards(SUMMARY)
-    expect(cards.find((c) => c.key === 'balance')?.variant).toBe('balance')
-    expect(cards.find((c) => c.key === 'periodBalance')?.variant).toBe('balance')
-    expect(cards.find((c) => c.key === 'income')?.variant).toBe('income')
-    expect(cards.find((c) => c.key === 'expense')?.variant).toBe('expense')
-  })
+const BALANCE_VARIATION: DashboardBalanceVariation = {
+  dateFrom: '2026-01-01',
+  dateTo: '2026-07-23',
+  balanceStart: 12000,
+  balanceEnd: 18500,
+  percentChange: 54.2,
+}
 
-  it('o Saldo não muda ao alterar o período do estado local (mesmo summary, filtros diferentes)', () => {
-    // Simula duas respostas do backend para períodos diferentes: `balance` é sempre
-    // o mesmo (cumulativo "até a data"), só `periodBalance` muda com o filtro.
-    const currentMonth: DashboardSummary = { ...SUMMARY, periodBalance: 1800 }
-    const last12Months: DashboardSummary = { ...SUMMARY, periodBalance: 12000 }
-
-    const saldoCurrentMonth = buildMainMetricCards(currentMonth).find((c) => c.key === 'balance')
-    const saldoLast12Months = buildMainMetricCards(last12Months).find((c) => c.key === 'balance')
-
-    expect(saldoCurrentMonth?.value).toBe(saldoLast12Months?.value)
-    expect(saldoCurrentMonth?.value).toBe(18500)
+describe('buildPeriodMetricCards', () => {
+  it('usa income/expense/periodBalance com as variantes corretas', () => {
+    const cards = buildPeriodMetricCards(SUMMARY)
+    expect(cards.find((c) => c.key === 'income')).toMatchObject({ value: 5000, variant: 'income' })
+    expect(cards.find((c) => c.key === 'expense')).toMatchObject({ value: 3200, variant: 'expense' })
+    expect(cards.find((c) => c.key === 'periodBalance')).toMatchObject({
+      value: 1800,
+      variant: 'balance',
+    })
   })
 
   it('usa 0 como fallback quando summary ainda não carregou', () => {
-    const cards = buildMainMetricCards(undefined)
+    const cards = buildPeriodMetricCards(undefined)
     expect(cards.every((card) => card.value === 0)).toBe(true)
   })
 })
 
+describe('buildBalanceVariationCards', () => {
+  it('mapeia balanceStart/balanceEnd, com percentChange só no card de fim', () => {
+    const cards = buildBalanceVariationCards(BALANCE_VARIATION)
+    const start = cards.find((c) => c.key === 'balanceStart')
+    const end = cards.find((c) => c.key === 'balanceEnd')
+
+    expect(start?.value).toBe(12000)
+    expect(start?.percentChange).toBeUndefined()
+
+    expect(end?.value).toBe(18500)
+    expect(end?.percentChange).toBe(54.2)
+  })
+
+  it('repassa percentChange null (sem base de comparação) tal qual veio da API', () => {
+    const cards = buildBalanceVariationCards({ ...BALANCE_VARIATION, percentChange: null })
+    expect(cards.find((c) => c.key === 'balanceEnd')?.percentChange).toBeNull()
+  })
+
+  it('sem indicador (undefined) enquanto os dados ainda não carregaram', () => {
+    const cards = buildBalanceVariationCards(undefined)
+    expect(cards.every((card) => card.value === 0)).toBe(true)
+    expect(cards.find((c) => c.key === 'balanceEnd')?.percentChange).toBeUndefined()
+  })
+})
+
 describe('buildExtraMetricCards', () => {
-  it('são sempre totais gerais, com formatValue de moeda só no ticket médio', () => {
-    const cards = buildExtraMetricCards(SUMMARY)
+  it('são as 3 contagens gerais de GET /dashboard/counts, sem ticket médio nem transações', () => {
+    const cards = buildExtraMetricCards(COUNTS)
+    expect(cards).toHaveLength(3)
     expect(cards.find((c) => c.key === 'membersCount')?.value).toBe(87)
-    expect(cards.find((c) => c.key === 'transactionsCount')?.value).toBe(342)
     expect(cards.find((c) => c.key === 'ministriesCount')?.value).toBe(6)
-    const ticket = cards.find((c) => c.key === 'averageTicket')
-    expect(ticket?.value).toBe(245.5)
-    expect(ticket?.formatValue?.(245.5)).toContain('R$')
+    expect(cards.find((c) => c.key === 'categoriesCount')?.value).toBe(14)
+  })
+
+  it('usa 0 como fallback quando counts ainda não carregou', () => {
+    const cards = buildExtraMetricCards(undefined)
+    expect(cards.every((card) => card.value === 0)).toBe(true)
   })
 })

@@ -66,7 +66,7 @@ function PieChartLegend({ data, total }: PieChartLegendProps) {
 }
 
 export interface PieChartProps {
-  /** `incomeByCategory` ou `expenseByCategory` de `GET /v1/dashboard/charts`. */
+  /** `incomeByCategory` ou `expenseByCategory` de `GET /v1/dashboard/by-category`. */
   data: CategorySlice[]
   /** Skeleton no lugar do gráfico enquanto o filtro/busca associado é aplicado. */
   isLoading?: boolean

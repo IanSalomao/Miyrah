@@ -41,6 +41,24 @@ export function formatSignedCurrency(value: number): string {
   return magnitude
 }
 
+/** Uma casa decimal com vírgula, sem zeros à toa (1,5 / 15). */
+function trimDecimal(value: number): string {
+  return value.toLocaleString('pt-BR', { maximumFractionDigits: 1 })
+}
+
+/**
+ * Número compacto para réguas de gráfico, economizando espaço no eixo:
+ * 1.000 → "1k", 12.500 → "12,5k", 1.500.000 → "1,5mi". Sem símbolo de moeda
+ * (o tooltip mostra o valor exato em BRL). Preserva o sinal "−" quando negativo.
+ */
+export function formatCompactNumber(value: number): string {
+  const abs = Math.abs(value)
+  const sign = value < 0 ? MINUS : ''
+  if (abs < 1000) return `${sign}${Math.round(abs)}`
+  if (abs < 1_000_000) return `${sign}${trimDecimal(abs / 1000)}k`
+  return `${sign}${trimDecimal(abs / 1_000_000)}mi`
+}
+
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/
 
 /**

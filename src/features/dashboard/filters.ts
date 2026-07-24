@@ -44,3 +44,45 @@ export function isDashboardFiltersReady(filters: DashboardFilters): boolean {
   if (filters.period === 'custom') return Boolean(filters.dateFrom && filters.dateTo)
   return true
 }
+
+function toIsoDate(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+/** Primeiro dia do mês `monthsAgo` meses antes de `today` (0 = mês atual). */
+function firstDayOfMonthsAgo(today: Date, monthsAgo: number): Date {
+  return new Date(today.getFullYear(), today.getMonth() - monthsAgo, 1)
+}
+
+/**
+ * Resolve o período ativo do filtro (que pode ser um preset) em `dateFrom`/`dateTo`
+ * concretos — exigido por `GET /v1/dashboard/balance-variation`, que não entende
+ * presets. Períodos que terminam no presente usam `today` como `dateTo`; `custom`
+ * repassa as próprias datas do filtro (ver wiki/api/dashboard.md).
+ */
+export function resolveBalanceVariationRange(
+  filters: DashboardFilters,
+  today: Date = new Date(),
+): { dateFrom: string; dateTo: string } {
+  if (filters.period === 'custom') {
+    return { dateFrom: filters.dateFrom ?? toIsoDate(today), dateTo: filters.dateTo ?? toIsoDate(today) }
+  }
+
+  const dateTo = toIsoDate(today)
+  switch (filters.period) {
+    case 'last3Months':
+      return { dateFrom: toIsoDate(firstDayOfMonthsAgo(today, 2)), dateTo }
+    case 'last6Months':
+      return { dateFrom: toIsoDate(firstDayOfMonthsAgo(today, 5)), dateTo }
+    case 'last12Months':
+      return { dateFrom: toIsoDate(firstDayOfMonthsAgo(today, 11)), dateTo }
+    case 'currentYear':
+      return { dateFrom: toIsoDate(new Date(today.getFullYear(), 0, 1)), dateTo }
+    case 'currentMonth':
+    default:
+      return { dateFrom: toIsoDate(firstDayOfMonthsAgo(today, 0)), dateTo }
+  }
+}

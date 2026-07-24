@@ -1,22 +1,22 @@
 // Início — wiki/pages/page_home.md
-// component_line_chart (entradas/saídas por dia, mês atual) + component_bar_chart
-// (comparativo entrada x saída dos últimos 6 meses, sem toggle de agrupamento).
+// component_line_chart (entradas/saídas por dia, mês atual, sem toggle de agrupamento) +
+// component_bar_chart (comparativo entrada x saída dos últimos 6 meses, sem toggle de agrupamento).
 
 import { BarChart } from '@/components/bar-chart/bar-chart'
 import { LineChart } from '@/components/line-chart/line-chart'
 import { ApiError } from '@/lib/api-client'
-import { useDashboardCharts } from '../hooks/use-dashboard-charts'
+import { useDashboardLine } from '../hooks/use-dashboard-line'
 import { useDashboardComparison } from '../hooks/use-dashboard-comparison'
 import { BlockError } from './block-error'
 
 export function ChartsSection() {
   const {
-    data: charts,
+    data: line,
     isLoading: isChartsLoading,
     isError: isChartsError,
     error: chartsError,
     refetch: refetchCharts,
-  } = useDashboardCharts()
+  } = useDashboardLine()
 
   const {
     data: comparison,
@@ -27,10 +27,11 @@ export function ChartsSection() {
   } = useDashboardComparison()
 
   return (
-    <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <div className="lg:col-span-2">
+    <section className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-3">
+      <div className="flex flex-col lg:col-span-2">
         {isChartsError ? (
           <BlockError
+            className="flex-1"
             message={
               chartsError instanceof ApiError
                 ? chartsError.message
@@ -39,12 +40,13 @@ export function ChartsSection() {
             onRetry={() => void refetchCharts()}
           />
         ) : (
-          <LineChart data={charts?.line ?? []} isLoading={isChartsLoading} />
+          <LineChart className="flex-1" data={line?.line ?? []} isLoading={isChartsLoading} />
         )}
       </div>
-      <div className="lg:col-span-1">
+      <div className="flex flex-col lg:col-span-1">
         {isComparisonError ? (
           <BlockError
+            className="flex-1"
             message={
               comparisonError instanceof ApiError
                 ? comparisonError.message
@@ -54,6 +56,7 @@ export function ChartsSection() {
           />
         ) : (
           <BarChart
+            className="flex-1"
             data={comparison?.buckets ?? []}
             comparison={comparison?.comparison}
             isLoading={isComparisonLoading}

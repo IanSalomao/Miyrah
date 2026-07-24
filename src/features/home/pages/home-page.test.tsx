@@ -5,35 +5,31 @@ import { MemoryRouter } from 'react-router-dom'
 import { HomePage } from './home-page'
 import type {
   Category,
-  DashboardCharts,
+  DashboardBalance,
   DashboardComparison,
+  DashboardLine,
   DashboardSummary,
   Ministry,
   Paginated,
   Transaction,
 } from '@/types'
 
+const balance: DashboardBalance = { balance: 18500 }
+
 const summary: DashboardSummary = {
-  balance: 18500,
   income: 5000,
   expense: 3200,
   periodBalance: 1800,
-  membersCount: 87,
-  transactionsCount: 342,
-  ministriesCount: 6,
-  averageTicket: 245.5,
+  incomeCount: 42,
+  expenseCount: 30,
+  transactionsCount: 72,
 }
 
-const charts: DashboardCharts = {
+const line: DashboardLine = {
+  granularity: 'day',
   line: [
     { date: '2026-07-01', income: 500, expense: 0 },
     { date: '2026-07-02', income: 0, expense: 1200 },
-  ],
-  incomeByCategory: [
-    { categoryId: 'cat-income-1', name: 'Dízimo', color: '#22C55E', value: 500 },
-  ],
-  expenseByCategory: [
-    { categoryId: 'cat-expense-1', name: 'Aluguel', color: '#EF4444', value: 1200 },
   ],
 }
 
@@ -72,8 +68,9 @@ const comparison: DashboardComparison = {
 }
 
 vi.mock('@/services', () => ({
+  getDashboardBalance: vi.fn(() => Promise.resolve(balance)),
   getDashboardSummary: vi.fn(() => Promise.resolve(summary)),
-  getDashboardCharts: vi.fn(() => Promise.resolve(charts)),
+  getDashboardLine: vi.fn(() => Promise.resolve(line)),
   getDashboardComparison: vi.fn(() => Promise.resolve(comparison)),
   listTransactions: vi.fn(() => Promise.resolve(recentTransactions)),
   listCategories: vi.fn(() => Promise.resolve(categoriesPage)),

@@ -15,7 +15,7 @@ import {
 } from 'recharts'
 
 import { FilterTabs, type FilterTabOption } from '@/components/tabs/filter-tabs'
-import { formatCurrency } from '@/lib/format'
+import { formatCompactNumber, formatCurrency } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { ComparisonBucket, ComparisonGroupBy, DashboardComparisonStats } from '@/types'
 
@@ -41,9 +41,7 @@ function BarChartTooltip({ active, payload, label }: TooltipContentProps) {
           return (
             <li key={key} className="flex items-center justify-between gap-4">
               <span className="text-muted-foreground">{SERIES_LABEL[key]}</span>
-              <span
-                className={cn('font-mono', key === 'income' ? 'text-income' : 'text-expense')}
-              >
+              <span className={cn('font-mono', key === 'income' ? 'text-income' : 'text-expense')}>
                 {formatCurrency(Number(entry.value ?? 0))}
               </span>
             </li>
@@ -111,7 +109,12 @@ export interface BarChartProps {
   className?: string
 }
 
-const CHART_HEIGHT = 'h-72'
+// Área do gráfico: cresce para preencher o card (flex-1) com piso de altura, para
+// que cards lado a lado com conteúdos de cabeçalho diferentes fiquem na mesma altura.
+const CHART_AREA = 'min-h-72 flex-1'
+// Elevação de card (design_system.md): contorno em Linha + fundo Superfície + sombra.
+// flex-col para a área do gráfico esticar até o fim do card.
+const CARD = 'flex flex-col rounded-lg border border-border bg-card p-4 shadow-sm'
 
 /** Gráfico de barras comparativas reutilizável (Entradas x Saídas). Ver component_bar_chart.md. */
 export function BarChart({
@@ -128,11 +131,7 @@ export function BarChart({
       <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
         {title ? <h3 className="text-base font-semibold text-foreground">{title}</h3> : <span />}
         {onGroupByChange ? (
-          <FilterTabs
-            options={GROUP_BY_OPTIONS}
-            value={groupBy}
-            onValueChange={onGroupByChange}
-          />
+          <FilterTabs options={GROUP_BY_OPTIONS} value={groupBy} onValueChange={onGroupByChange} />
         ) : null}
       </div>
     ) : null
@@ -156,12 +155,12 @@ export function BarChart({
 
   if (isLoading) {
     return (
-      <div className={cn('w-full', className)}>
+      <div className={cn(CARD, className)}>
         {header}
         <div
           role="status"
           aria-label="Carregando gráfico de entradas e saídas"
-          className={cn(CHART_HEIGHT, 'w-full animate-pulse rounded-md bg-muted')}
+          className={cn(CHART_AREA, 'w-full animate-pulse rounded-md bg-muted')}
         />
       </div>
     )
@@ -169,12 +168,12 @@ export function BarChart({
 
   if (data.length === 0) {
     return (
-      <div className={cn('w-full', className)}>
+      <div className={cn(CARD, className)}>
         {header}
         <div
           className={cn(
-            CHART_HEIGHT,
-            'flex w-full flex-col items-center justify-center gap-2 rounded-md border border-border text-muted-foreground',
+            CHART_AREA,
+            'flex w-full flex-col items-center justify-center gap-2 rounded-md text-muted-foreground',
           )}
         >
           <BarChart3 className="size-8" aria-hidden="true" />
@@ -185,39 +184,47 @@ export function BarChart({
   }
 
   return (
-    <div className={cn('w-full', className)}>
+    <div className={cn(CARD, className)}>
       {header}
       {indicator}
-      <div className={cn(CHART_HEIGHT, 'w-full')}>
-        <ResponsiveContainer
-          width="100%"
-          height="100%"
-          initialDimension={{ width: 480, height: 288 }}
-        >
-          <RechartsBarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
-            <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-            <XAxis
-              dataKey="label"
-              tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
-              tickLine={false}
-              axisLine={{ stroke: 'var(--border)' }}
-            />
-            <YAxis
-              tickFormatter={(value: number) => formatCurrency(value)}
-              tick={{ fontSize: 11, fill: 'var(--muted-foreground)', fontFamily: 'var(--font-mono)' }}
-              tickLine={false}
-              axisLine={false}
-              width={92}
-            />
-            <Tooltip content={(props) => <BarChartTooltip {...props} />} />
-            <Legend
-              formatter={(value: string) => SERIES_LABEL[value as 'income' | 'expense']}
-              wrapperStyle={{ fontSize: 12, color: 'var(--foreground)' }}
-            />
-            <Bar dataKey="income" name="income" fill="var(--income)" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="expense" name="expense" fill="var(--expense)" radius={[4, 4, 0, 0]} />
-          </RechartsBarChart>
-        </ResponsiveContainer>
+      {/* relative + inset-0: dá altura concreta ao ResponsiveContainer mesmo quando o
+          card cresce via flex (senão height="100%" resolve para 0 em contexto empilhado). */}
+      <div className={cn(CHART_AREA, 'relative w-full')}>
+        <div className="absolute inset-0">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            initialDimension={{ width: 480, height: 288 }}
+          >
+            <RechartsBarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+              <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
+              <XAxis
+                dataKey="label"
+                tick={{ fontSize: 12, fill: 'var(--muted-foreground)' }}
+                tickLine={false}
+                axisLine={{ stroke: 'var(--border)' }}
+              />
+              <YAxis
+                tickFormatter={(value: number) => formatCompactNumber(value)}
+                tick={{
+                  fontSize: 11,
+                  fill: 'var(--muted-foreground)',
+                  fontFamily: 'var(--font-mono)',
+                }}
+                tickLine={false}
+                axisLine={false}
+                width={40}
+              />
+              <Tooltip content={(props) => <BarChartTooltip {...props} />} />
+              <Legend
+                formatter={(value: string) => SERIES_LABEL[value as 'income' | 'expense']}
+                wrapperStyle={{ fontSize: 12, color: 'var(--foreground)' }}
+              />
+              <Bar dataKey="income" name="income" fill="var(--income)" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="expense" name="expense" fill="var(--expense)" radius={[4, 4, 0, 0]} />
+            </RechartsBarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   )

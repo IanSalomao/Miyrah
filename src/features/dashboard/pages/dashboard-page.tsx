@@ -8,7 +8,7 @@ import { LineChart } from '@/components/line-chart'
 import { PieChart } from '@/components/pie-chart'
 import { BarChart } from '@/components/bar-chart'
 import { ApiError } from '@/lib/api-client'
-import type { ComparisonGroupBy } from '@/types'
+import type { ComparisonGroupBy, LineGranularity } from '@/types'
 import { DashboardFilterBar } from '../components/dashboard-filter-bar'
 import { BlockError } from '../components/block-error'
 import {
@@ -16,9 +16,13 @@ import {
   isDashboardFiltersReady,
   toDashboardFilters,
 } from '../filters'
-import { buildExtraMetricCards, buildMainMetricCards } from '../summary-cards'
+import { buildBalanceVariationCards, buildExtraMetricCards, buildPeriodMetricCards } from '../summary-cards'
+import { useDashboardBalance } from '../hooks/use-dashboard-balance'
 import { useDashboardSummary } from '../hooks/use-dashboard-summary'
-import { useDashboardCharts } from '../hooks/use-dashboard-charts'
+import { useDashboardCounts } from '../hooks/use-dashboard-counts'
+import { useDashboardBalanceVariation } from '../hooks/use-dashboard-balance-variation'
+import { useDashboardLine } from '../hooks/use-dashboard-line'
+import { useDashboardByCategory } from '../hooks/use-dashboard-by-category'
 import { useDashboardComparison } from '../hooks/use-dashboard-comparison'
 import { useDashboardFilterOptions } from '../hooks/use-dashboard-filter-options'
 
@@ -32,14 +36,27 @@ export function DashboardPage() {
   const filtersReady = isDashboardFiltersReady(filters)
 
   const [groupBy, setGroupBy] = useState<ComparisonGroupBy>('month')
+  const [granularity, setGranularity] = useState<LineGranularity>('day')
 
   const { categories, ministries } = useDashboardFilterOptions()
+
+  // Saldo isolado — carregado uma vez, imune a qualquer filtro.
+  const balanceQuery = useDashboardBalance()
+
+  // Bloco de métricas do período — recalculado pelos filtros ativos.
   const summaryQuery = useDashboardSummary(filters)
-  const chartsQuery = useDashboardCharts(filters)
+  const balanceVariationQuery = useDashboardBalanceVariation(filters)
+
+  const lineQuery = useDashboardLine(filters, granularity)
+  const byCategoryQuery = useDashboardByCategory(filters)
   const comparisonQuery = useDashboardComparison(filters, groupBy)
 
-  const mainCards = buildMainMetricCards(summaryQuery.data)
-  const extraCards = buildExtraMetricCards(summaryQuery.data)
+  // Bloco de métricas extras — sempre totais gerais, sem filtro.
+  const countsQuery = useDashboardCounts()
+
+  const periodCards = buildPeriodMetricCards(summaryQuery.data)
+  const balanceVariationCards = buildBalanceVariationCards(balanceVariationQuery.data)
+  const extraCards = buildExtraMetricCards(countsQuery.data)
 
   return (
     <div className="flex flex-col gap-6">
@@ -49,6 +66,21 @@ export function DashboardPage() {
           Análise financeira com filtros globais — o Saldo é sempre até a data de hoje.
         </p>
       </div>
+
+      {balanceQuery.isError ? (
+        <BlockError
+          message={errorMessage(balanceQuery.error) ?? 'Não foi possível carregar o saldo.'}
+          onRetry={() => balanceQuery.refetch()}
+        />
+      ) : (
+        <MetricCard
+          label="Saldo"
+          value={balanceQuery.data?.balance ?? 0}
+          variant="balance"
+          loading={balanceQuery.isPending}
+          className="sm:max-w-xs"
+        />
+      )}
 
       <DashboardFilterBar
         state={filterState}
@@ -63,14 +95,21 @@ export function DashboardPage() {
         </p>
       ) : (
         <>
-          {summaryQuery.isError ? (
+          {summaryQuery.isError || balanceVariationQuery.isError ? (
             <BlockError
-              message={errorMessage(summaryQuery.error) ?? 'Não foi possível carregar as métricas.'}
-              onRetry={() => summaryQuery.refetch()}
+              message={
+                errorMessage(summaryQuery.error) ??
+                errorMessage(balanceVariationQuery.error) ??
+                'Não foi possível carregar as métricas do período.'
+              }
+              onRetry={() => {
+                void summaryQuery.refetch()
+                void balanceVariationQuery.refetch()
+              }}
             />
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {mainCards.map((card) => (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {periodCards.map((card) => (
                 <MetricCard
                   key={card.key}
                   label={card.label}
@@ -79,69 +118,90 @@ export function DashboardPage() {
                   loading={summaryQuery.isPending}
                 />
               ))}
+              {balanceVariationCards.map((card) => (
+                <MetricCard
+                  key={card.key}
+                  label={card.label}
+                  value={card.value}
+                  variant={card.variant}
+                  percentChange={card.percentChange}
+                  loading={balanceVariationQuery.isPending}
+                />
+              ))}
             </div>
           )}
 
-          {chartsQuery.isError ? (
+          {lineQuery.isError ? (
             <BlockError
-              message={errorMessage(chartsQuery.error) ?? 'Não foi possível carregar os gráficos.'}
-              onRetry={() => chartsQuery.refetch()}
+              message={errorMessage(lineQuery.error) ?? 'Não foi possível carregar o gráfico de linha.'}
+              onRetry={() => lineQuery.refetch()}
             />
           ) : (
-            <>
-              <LineChart data={chartsQuery.data?.line ?? []} isLoading={chartsQuery.isPending} />
-
-              {comparisonQuery.isError ? (
-                <BlockError
-                  message={
-                    errorMessage(comparisonQuery.error) ??
-                    'Não foi possível carregar o comparativo por período.'
-                  }
-                  onRetry={() => comparisonQuery.refetch()}
-                />
-              ) : (
-                <BarChart
-                  data={comparisonQuery.data?.buckets ?? []}
-                  comparison={comparisonQuery.data?.comparison}
-                  isLoading={comparisonQuery.isPending}
-                  groupBy={groupBy}
-                  onGroupByChange={setGroupBy}
-                  title="Comparativo por período"
-                />
-              )}
-
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                <PieChart
-                  title="Entradas por categoria"
-                  data={chartsQuery.data?.incomeByCategory ?? []}
-                  isLoading={chartsQuery.isPending}
-                />
-                <PieChart
-                  title="Saídas por categoria"
-                  data={chartsQuery.data?.expenseByCategory ?? []}
-                  isLoading={chartsQuery.isPending}
-                />
-              </div>
-            </>
+            <LineChart
+              data={lineQuery.data?.line ?? []}
+              isLoading={lineQuery.isPending}
+              granularity={granularity}
+              onGranularityChange={setGranularity}
+              title="Entradas e saídas"
+            />
           )}
 
-          {summaryQuery.isError ? (
+          {comparisonQuery.isError ? (
             <BlockError
               message={
-                errorMessage(summaryQuery.error) ?? 'Não foi possível carregar as métricas extras.'
+                errorMessage(comparisonQuery.error) ??
+                'Não foi possível carregar o comparativo por período.'
               }
-              onRetry={() => summaryQuery.refetch()}
+              onRetry={() => comparisonQuery.refetch()}
             />
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <BarChart
+              data={comparisonQuery.data?.buckets ?? []}
+              comparison={comparisonQuery.data?.comparison}
+              isLoading={comparisonQuery.isPending}
+              groupBy={groupBy}
+              onGroupByChange={setGroupBy}
+              title="Comparativo por período"
+            />
+          )}
+
+          {byCategoryQuery.isError ? (
+            <BlockError
+              message={
+                errorMessage(byCategoryQuery.error) ??
+                'Não foi possível carregar os gráficos por categoria.'
+              }
+              onRetry={() => byCategoryQuery.refetch()}
+            />
+          ) : (
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <PieChart
+                title="Entradas por categoria"
+                data={byCategoryQuery.data?.incomeByCategory ?? []}
+                isLoading={byCategoryQuery.isPending}
+              />
+              <PieChart
+                title="Saídas por categoria"
+                data={byCategoryQuery.data?.expenseByCategory ?? []}
+                isLoading={byCategoryQuery.isPending}
+              />
+            </div>
+          )}
+
+          {countsQuery.isError ? (
+            <BlockError
+              message={errorMessage(countsQuery.error) ?? 'Não foi possível carregar as métricas extras.'}
+              onRetry={() => countsQuery.refetch()}
+            />
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {extraCards.map((card) => (
                 <MetricCard
                   key={card.key}
                   label={card.label}
                   value={card.value}
                   variant="neutral"
-                  formatValue={card.formatValue}
-                  loading={summaryQuery.isPending}
+                  loading={countsQuery.isPending}
                 />
               ))}
             </div>
