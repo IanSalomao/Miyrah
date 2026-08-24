@@ -100,4 +100,52 @@ describe('MetricCard', () => {
     )
     expect(screen.queryByText(/%/)).not.toBeInTheDocument()
   })
+
+  it('secondary: exibe a 3ª linha auxiliar quando não há percentChange', () => {
+    render(<MetricCard label="Entradas" value={1500} variant="income" secondary="4 transações" />)
+    expect(screen.getByText('4 transações')).toBeInTheDocument()
+  })
+
+  it('percentChange tem prioridade sobre secondary', () => {
+    render(
+      <MetricCard
+        label="Saldo no fim do período"
+        value={18500}
+        variant="balance"
+        percentChange={10}
+        secondary="4 transações"
+      />,
+    )
+    expect(screen.getByText('↑ 10,0%')).toBeInTheDocument()
+    expect(screen.queryByText('4 transações')).not.toBeInTheDocument()
+  })
+
+  it('secondary não aparece durante o loading', () => {
+    render(
+      <MetricCard label="Entradas" value={1500} variant="income" secondary="4 transações" loading />,
+    )
+    expect(screen.queryByText('4 transações')).not.toBeInTheDocument()
+  })
+
+  it('icon: renderiza o ícone quando informado', () => {
+    render(
+      <MetricCard
+        label="Entradas"
+        value={1500}
+        variant="income"
+        icon={<svg data-testid="metric-icon" />}
+      />,
+    )
+    expect(screen.getByTestId('metric-icon')).toBeInTheDocument()
+  })
+
+  it('info: expõe um gatilho de ajuda acessível quando informado', () => {
+    render(<MetricCard label="Entradas" value={1500} variant="income" info="Como é calculado." />)
+    expect(screen.getByRole('button', { name: 'Sobre Entradas' })).toBeInTheDocument()
+  })
+
+  it('info omitido: sem gatilho de ajuda', () => {
+    render(<MetricCard label="Entradas" value={1500} variant="income" />)
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
 })

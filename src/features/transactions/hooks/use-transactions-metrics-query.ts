@@ -20,6 +20,9 @@ export interface TransactionsMetrics {
   income: number
   expense: number
   balance: number
+  incomeCount: number
+  expenseCount: number
+  transactionsCount: number
 }
 
 export function useTransactionsMetricsQuery(filters: TransactionsFilters) {
@@ -39,11 +42,25 @@ export function useTransactionsMetricsQuery(filters: TransactionsFilters) {
       const { items } = await listTransactions(query, signal)
       let income = 0
       let expense = 0
+      let incomeCount = 0
+      let expenseCount = 0
       for (const item of items) {
-        if (item.value >= 0) income += item.value
-        else expense += item.value
+        if (item.value >= 0) {
+          income += item.value
+          incomeCount += 1
+        } else {
+          expense += item.value
+          expenseCount += 1
+        }
       }
-      return { income, expense, balance: income + expense }
+      return {
+        income,
+        expense,
+        balance: income + expense,
+        incomeCount,
+        expenseCount,
+        transactionsCount: incomeCount + expenseCount,
+      }
     },
   })
 }

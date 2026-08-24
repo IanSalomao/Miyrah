@@ -4,13 +4,21 @@
 // tela de Relatórios quando a rota existir.
 
 import { apiClient } from '@/lib/api-client'
-import type { CreateReportPayload, Paginated, Report, ReportDownload, ReportsQuery } from '@/types'
+import type {
+  CreateReportPayload,
+  GeneratedReport,
+  Paginated,
+  Report,
+  ReportDownload,
+  ReportsQuery,
+} from '@/types'
 
 export function listReports(query: ReportsQuery, signal?: AbortSignal): Promise<Paginated<Report>> {
   return apiClient.get('/reports', { ...query }, signal)
 }
 
-export function createReport(payload: CreateReportPayload): Promise<Report> {
+/** Geração síncrona — a resposta só volta após o PDF estar pronto. */
+export function createReport(payload: CreateReportPayload): Promise<GeneratedReport> {
   return apiClient.post('/reports', payload)
 }
 

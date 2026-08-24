@@ -1,6 +1,5 @@
 import { createBrowserRouter, Link, type RouteObject } from 'react-router-dom'
 import { AuthLayout } from '@/components/auth-layout/auth-layout'
-import { PagePlaceholder } from '@/components/page-placeholder'
 import { ForgotPasswordPage } from '@/features/auth/forgot-password-page'
 import { LoginPage } from '@/features/auth/login-page'
 import { RegisterPage } from '@/features/auth/register-page'
@@ -10,6 +9,7 @@ import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { HomePage } from '@/features/home/pages/home-page'
 import { MembersPage } from '@/features/members/members-page'
 import { MinistriesPage } from '@/features/ministries/pages/ministries-page'
+import { ReportsPage } from '@/features/reports/pages/reports-page'
 import { SettingsPage } from '@/features/settings/settings-page'
 import { TransactionsPage } from '@/features/transactions/transactions-page'
 import { ProtectedLayout } from './protected-layout'
@@ -38,7 +38,7 @@ export const routes: RouteObject[] = [
           { path: 'members', element: <MembersPage /> },
           { path: 'ministries', element: <MinistriesPage /> },
           { path: 'categories', element: <CategoriesPage /> },
-          { path: 'reports', element: <PagePlaceholder title="Relatórios" /> },
+          { path: 'reports', element: <ReportsPage /> },
           { path: 'settings', element: <SettingsPage /> },
         ],
       },

@@ -2,13 +2,14 @@
 // Tela de análise financeira com barra de filtros globais. Sem lista de últimas
 // transações, sem botão de adicionar transação (lançamento é em /transactions).
 
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
+import { FolderTree, DollarSign, TrendingDown, TrendingUp, Users, Wallet } from 'lucide-react'
 import { MetricCard } from '@/components/metric-card'
 import { LineChart } from '@/components/line-chart'
 import { PieChart } from '@/components/pie-chart'
 import { BarChart } from '@/components/bar-chart'
 import { ApiError } from '@/lib/api-client'
-import type { ComparisonGroupBy, LineGranularity } from '@/types'
+import type { ComparisonGroupBy, DashboardSummary, LineGranularity } from '@/types'
 import { DashboardFilterBar } from '../components/dashboard-filter-bar'
 import { BlockError } from '../components/block-error'
 import {
@@ -28,6 +29,41 @@ import { useDashboardFilterOptions } from '../hooks/use-dashboard-filter-options
 
 function errorMessage(error: unknown): string | undefined {
   return error instanceof ApiError ? error.message : undefined
+}
+
+// Ícone + texto explicativo por card, casados pela `key` dos builders de summary-cards.
+const CARD_ICONS: Record<string, ReactNode> = {
+  income: <TrendingUp />,
+  expense: <TrendingDown />,
+  periodBalance: <DollarSign />,
+  balanceStart: <Wallet />,
+  balanceEnd: <Wallet />,
+  membersCount: <Users />,
+  ministriesCount: <FolderTree />,
+  categoriesCount: <FolderTree />,
+}
+
+
+const CARD_INFO: Record<string, string> = {
+  income: 'Total de entradas no período e filtros selecionados.',
+  expense: 'Total de saídas no período e filtros selecionados.',
+  periodBalance: 'Entradas menos saídas do período filtrado. Positivo indica superávit; negativo, déficit.',
+  balanceStart: 'Saldo acumulado até o dia anterior ao início do período selecionado.',
+  balanceEnd: 'Saldo acumulado até o fim do período. A variação (%) compara com o saldo inicial.',
+  membersCount: 'Total de membros cadastrados na igreja. Não depende dos filtros.',
+  ministriesCount: 'Total de ministérios cadastrados. Não depende dos filtros.',
+  categoriesCount: 'Total de categorias de transação cadastradas. Não depende dos filtros.',
+}
+
+// "1 transação" / "N transações".
+function transactionsLabel(count: number): string {
+  return `${count} ${count === 1 ? 'transação' : 'transações'}`
+}
+
+const PERIOD_CARD_COUNTS: Record<string, keyof DashboardSummary> = {
+  income: 'incomeCount',
+  expense: 'expenseCount',
+  periodBalance: 'transactionsCount',
 }
 
 export function DashboardPage() {
@@ -78,7 +114,9 @@ export function DashboardPage() {
           value={balanceQuery.data?.balance ?? 0}
           variant="balance"
           loading={balanceQuery.isPending}
-          className="sm:max-w-xs"
+          icon={<Wallet />}
+          info="Saldo total da igreja até hoje — soma de todas as entradas menos as saídas. Nunca é afetado pelos filtros."
+          className="sm:max-w-1/3"
         />
       )}
 
@@ -108,16 +146,23 @@ export function DashboardPage() {
               }}
             />
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-              {periodCards.map((card) => (
-                <MetricCard
-                  key={card.key}
-                  label={card.label}
-                  value={card.value}
-                  variant={card.variant}
-                  loading={summaryQuery.isPending}
-                />
-              ))}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {periodCards.map((card) => {
+                const countField = PERIOD_CARD_COUNTS[card.key]
+                const count = summaryQuery.data?.[countField]
+                return (
+                  <MetricCard
+                    key={card.key}
+                    label={card.label}
+                    value={card.value}
+                    variant={card.variant}
+                    loading={summaryQuery.isPending}
+                    icon={CARD_ICONS[card.key]}
+                    info={CARD_INFO[card.key]}
+                    secondary={count !== undefined ? transactionsLabel(count) : undefined}
+                  />
+                )
+              })}
               {balanceVariationCards.map((card) => (
                 <MetricCard
                   key={card.key}
@@ -126,6 +171,8 @@ export function DashboardPage() {
                   variant={card.variant}
                   percentChange={card.percentChange}
                   loading={balanceVariationQuery.isPending}
+                  icon={CARD_ICONS[card.key]}
+                  info={CARD_INFO[card.key]}
                 />
               ))}
             </div>
@@ -202,6 +249,8 @@ export function DashboardPage() {
                   value={card.value}
                   variant="neutral"
                   loading={countsQuery.isPending}
+                  icon={CARD_ICONS[card.key]}
+                  info={CARD_INFO[card.key]}
                 />
               ))}
             </div>

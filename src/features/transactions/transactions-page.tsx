@@ -2,6 +2,7 @@
 // Único lugar do sistema onde uma transação é lançada.
 
 import { useState } from 'react'
+import { Scale, TrendingDown, TrendingUp } from 'lucide-react'
 import { MetricCard } from '@/components/metric-card/metric-card'
 import { ConfirmModal } from '@/components/modal-form/confirm-modal'
 import { formatDate } from '@/lib/format'
@@ -55,7 +56,18 @@ export function TransactionsPage() {
     setDeletingTransaction(null)
   }
 
-  const metrics = metricsQuery.data ?? { income: 0, expense: 0, balance: 0 }
+  const metrics = metricsQuery.data ?? {
+    income: 0,
+    expense: 0,
+    balance: 0,
+    incomeCount: 0,
+    expenseCount: 0,
+    transactionsCount: 0,
+  }
+
+  // "1 transação" / "N transações".
+  const transactionsLabel = (count: number) =>
+    `${count} ${count === 1 ? 'transação' : 'transações'}`
 
   return (
     <div className="flex flex-col gap-6">
@@ -70,18 +82,27 @@ export function TransactionsPage() {
           value={metrics.income}
           variant="income"
           loading={metricsQuery.isLoading}
+          icon={<TrendingUp />}
+          secondary={transactionsLabel(metrics.incomeCount)}
+          info="Soma das entradas que atendem aos filtros aplicados. Os cards não mudam ao paginar."
         />
         <MetricCard
           label="Saídas"
           value={metrics.expense}
           variant="expense"
           loading={metricsQuery.isLoading}
+          icon={<TrendingDown />}
+          secondary={transactionsLabel(metrics.expenseCount)}
+          info="Soma das saídas que atendem aos filtros aplicados. Os cards não mudam ao paginar."
         />
         <MetricCard
           label="Balanço"
           value={metrics.balance}
           variant="balance"
           loading={metricsQuery.isLoading}
+          icon={<Scale />}
+          secondary={transactionsLabel(metrics.transactionsCount)}
+          info="Entradas menos saídas do conjunto filtrado. Positivo indica superávit; negativo, déficit."
         />
       </div>
 
