@@ -19,6 +19,7 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     css: true,
     // Não varrer as worktrees dos agentes em .claude/ (cópias completas do repo)
-    exclude: [...configDefaults.exclude, '**/.claude/**'],
+    // nem a wiki/ (symlink para o vault, que alcança os specs do back-end)
+    exclude: [...configDefaults.exclude, '**/.claude/**', '**/wiki/**'],
   },
 })
