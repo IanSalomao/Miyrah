@@ -1,4 +1,4 @@
-import { createBrowserRouter, Link, type RouteObject } from 'react-router-dom'
+import { createBrowserRouter, type RouteObject } from 'react-router-dom'
 import { AuthLayout } from '@/components/auth-layout/auth-layout'
 import { ForgotPasswordPage } from '@/features/auth/forgot-password-page'
 import { LoginPage } from '@/features/auth/login-page'
@@ -9,6 +9,7 @@ import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { HomePage } from '@/features/home/pages/home-page'
 import { MembersPage } from '@/features/members/members-page'
 import { MinistriesPage } from '@/features/ministries/pages/ministries-page'
+import { NotFoundPage } from '@/features/not-found/not-found-page'
 import { ReportsPage } from '@/features/reports/pages/reports-page'
 import { SettingsPage } from '@/features/settings/settings-page'
 import { TransactionsPage } from '@/features/transactions/transactions-page'
@@ -44,17 +45,9 @@ export const routes: RouteObject[] = [
       },
     ],
   },
-  {
-    path: '*',
-    element: (
-      <div className="flex min-h-svh flex-col items-center justify-center gap-3 bg-background px-4 text-center">
-        <h1 className="text-3xl font-semibold">Página não encontrada</h1>
-        <Link to="/" className="text-primary underline-offset-4 hover:underline">
-          Voltar para o início
-        </Link>
-      </div>
-    ),
-  },
+  // Catch-all: qualquer URL desconhecida cai na 404 (inclusive em deep link
+  // direto, graças ao fallback de history configurado em vercel.json).
+  { path: '*', element: <NotFoundPage /> },
 ]
 
 export const router = createBrowserRouter(routes)

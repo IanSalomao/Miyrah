@@ -46,4 +46,21 @@ describe('roteamento', () => {
     // A sidebar aparece nas páginas autenticadas.
     expect(screen.getByRole('link', { name: 'Transações' })).toBeInTheDocument()
   })
+
+  it('renderiza a tela 404 em rota inexistente', async () => {
+    setToken('mock-token', false)
+    renderAt('/rota-que-nao-existe')
+    expect(
+      await screen.findByRole('heading', { name: 'Página não encontrada' }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Ir para o Início' })).toHaveAttribute('href', '/')
+  })
+
+  it('a 404 aponta para o login quando não autenticado', async () => {
+    renderAt('/rota-que-nao-existe')
+    expect(
+      await screen.findByRole('heading', { name: 'Página não encontrada' }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Ir para o login' })).toHaveAttribute('href', '/login')
+  })
 })
