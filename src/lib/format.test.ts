@@ -12,6 +12,7 @@ import {
   maskCnpj,
   maskPhone,
   parseAmountInput,
+  toIsoDate,
 } from './format'
 
 // Normaliza espaços (Intl usa NBSP/narrow-NBSP entre "R$" e o número).
@@ -91,6 +92,14 @@ describe('formatDate', () => {
     expect(formatDate('2026-07-01')).toBe('01/07/2026')
     // Regressão do "um dia antes": 01/01 não pode virar 31/12 do ano anterior.
     expect(formatDate('2026-01-01')).toBe('01/01/2026')
+  })
+})
+
+describe('toIsoDate', () => {
+  it('usa o dia do fuso local, não o de UTC', () => {
+    // 23h30 local: em UTC-3 já é o dia seguinte, e toISOString() erraria.
+    expect(toIsoDate(new Date(2026, 8, 30, 23, 30))).toBe('2026-09-30')
+    expect(toIsoDate(new Date(2026, 0, 1, 0, 0))).toBe('2026-01-01')
   })
 })
 

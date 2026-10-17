@@ -13,6 +13,7 @@ import { CopyIcon, PlusIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FormDrawer } from '@/components/modal-form/form-drawer'
 import { ApiError } from '@/lib/api-client'
+import { toIsoDate } from '@/lib/format'
 import type { Transaction, TransactionType } from '@/types'
 import {
   createTransactionSchema,
@@ -36,15 +37,11 @@ interface TransactionFormModalProps {
   transaction?: Transaction | null
 }
 
-function todayIsoDate(): string {
-  return new Date().toISOString().slice(0, 10)
-}
-
 function blankFormValues(): TransactionFormValues {
   return {
     type: 'income',
     value: 0,
-    date: todayIsoDate(),
+    date: toIsoDate(new Date()),
     categoryId: '',
     description: '',
     memberId: '',

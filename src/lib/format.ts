@@ -108,6 +108,18 @@ function toDate(value: string): Date {
   return new Date(value)
 }
 
+/**
+ * Data no fuso local como YYYY-MM-DD (valor de `<input type="date">` e da API).
+ * Não usar `toISOString().slice(0, 10)`: ela converte para UTC, e em UTC-3
+ * depois das 21h já devolve o dia seguinte.
+ */
+export function toIsoDate(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
 /** Data em pt-BR (dd/mm/aaaa). Ideal para campos date-only como transaction.date. */
 export function formatDate(value: string): string {
   return dateFormatter.format(toDate(value))
