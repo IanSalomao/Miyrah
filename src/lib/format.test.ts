@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  daysUntil,
+  formatCents,
   formatCompactNumber,
   formatCurrency,
   formatDate,
@@ -102,5 +104,31 @@ describe('getInitials', () => {
     expect(getInitials('João da Silva')).toBe('JS')
     expect(getInitials('Maria')).toBe('MA')
     expect(getInitials('  ')).toBe('?')
+  })
+})
+
+describe('formatCents', () => {
+  it('converte centavos do gateway em BRL', () => {
+    expect(norm(formatCents(2900))).toBe('R$ 29,00')
+    expect(norm(formatCents(29000))).toBe('R$ 290,00')
+    expect(norm(formatCents(5))).toBe('R$ 0,05')
+  })
+})
+
+describe('daysUntil', () => {
+  const now = new Date(2026, 9, 19, 15, 30) // 19/10/2026, 15:30 local
+
+  it('conta dias de calendário, ignorando a hora', () => {
+    expect(daysUntil(new Date(2026, 9, 19, 23, 59).toISOString(), now)).toBe(0)
+    expect(daysUntil(new Date(2026, 9, 20, 0, 1).toISOString(), now)).toBe(1)
+    expect(daysUntil(new Date(2026, 10, 2, 8, 0).toISOString(), now)).toBe(14)
+  })
+
+  it('é negativo quando a data já passou', () => {
+    expect(daysUntil(new Date(2026, 9, 18, 23, 0).toISOString(), now)).toBe(-1)
+  })
+
+  it('aceita datas puras (YYYY-MM-DD) no fuso local', () => {
+    expect(daysUntil('2026-10-21', now)).toBe(2)
   })
 })

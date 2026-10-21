@@ -7,6 +7,7 @@ import type {
   DashboardFilters,
   LineGranularity,
   MembersQuery,
+  PaymentsQuery,
   ReportsQuery,
   TransactionsQuery,
 } from '@/types'
@@ -47,5 +48,10 @@ export const queryKeys = {
   reports: {
     all: ['reports'] as const,
     list: (query: ReportsQuery) => ['reports', 'list', query] as const,
+  },
+  subscription: {
+    all: ['subscription'] as const,
+    me: () => ['subscription', 'me'] as const,
+    payments: (query: PaymentsQuery) => ['subscription', 'payments', query] as const,
   },
 } as const

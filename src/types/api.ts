@@ -15,6 +15,9 @@ export type ErrorCode =
   | 'CATEGORY_TYPE_MISMATCH'
   | 'CATEGORY_TYPE_IMMUTABLE'
   | 'INVALID_OR_EXPIRED_TOKEN'
+  | 'SUBSCRIPTION_INACTIVE'
+  | 'SUBSCRIPTION_NOT_FOUND'
+  | 'PLAN_METHOD_NOT_ALLOWED'
   | 'INTERNAL_ERROR'
 
 /** Detalhe de erro por campo (validação com múltiplos campos). */

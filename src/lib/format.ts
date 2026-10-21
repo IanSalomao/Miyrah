@@ -41,6 +41,11 @@ export function formatSignedCurrency(value: number): string {
   return magnitude
 }
 
+/** Valor em centavos (padrão do gateway de pagamento) como moeda BRL — ex.: 2900 → R$ 29,00. */
+export function formatCents(cents: number): string {
+  return currencyFormatter.format(cents / 100)
+}
+
 /** Uma casa decimal com vírgula, sem zeros à toa (1,5 / 15). */
 function trimDecimal(value: number): string {
   return value.toLocaleString('pt-BR', { maximumFractionDigits: 1 })
@@ -77,6 +82,19 @@ function toDate(value: string): Date {
 /** Data em pt-BR (dd/mm/aaaa). Ideal para campos date-only como transaction.date. */
 export function formatDate(value: string): string {
   return dateFormatter.format(toDate(value))
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000
+
+/**
+ * Dias de calendário (no fuso local) de hoje até a data informada: 0 = hoje,
+ * 1 = amanhã, negativo = já passou. Ignora a hora — conta como o usuário lê a data.
+ */
+export function daysUntil(value: string, now: Date = new Date()): number {
+  const target = toDate(value)
+  const targetDay = Date.UTC(target.getFullYear(), target.getMonth(), target.getDate())
+  const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
+  return Math.round((targetDay - today) / DAY_MS)
 }
 
 /** Data + hora em pt-BR. Ideal para timestamps ISO-UTC (createdAt/generatedAt). */

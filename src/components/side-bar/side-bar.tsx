@@ -3,6 +3,7 @@ import {
   ArrowRightLeft,
   ChevronLeft,
   Church,
+  CreditCard,
   FileText,
   Home,
   LayoutDashboard,
@@ -27,7 +28,7 @@ interface NavItem {
   end?: boolean
 }
 
-// Itens na ordem de wiki/components/component_side_bar.md
+// Itens na ordem de wiki/components/component_side_bar.md (+ Assinatura, specs/subscription.md)
 const NAV_ITEMS: NavItem[] = [
   { to: '/', label: 'Início', icon: Home, end: true },
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -36,6 +37,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/ministries', label: 'Ministérios', icon: Church },
   { to: '/categories', label: 'Categorias', icon: Tags },
   { to: '/reports', label: 'Relatórios', icon: FileText },
+  { to: '/subscription', label: 'Assinatura', icon: CreditCard },
   { to: '/settings', label: 'Configurações', icon: Settings },
 ]
 

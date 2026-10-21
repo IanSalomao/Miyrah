@@ -12,6 +12,7 @@ import { MinistriesPage } from '@/features/ministries/pages/ministries-page'
 import { NotFoundPage } from '@/features/not-found/not-found-page'
 import { ReportsPage } from '@/features/reports/pages/reports-page'
 import { SettingsPage } from '@/features/settings/settings-page'
+import { SubscriptionPage } from '@/features/subscription/subscription-page'
 import { TransactionsPage } from '@/features/transactions/transactions-page'
 import { ProtectedLayout } from './protected-layout'
 import { ProtectedRoute } from './protected-route'
@@ -40,6 +41,7 @@ export const routes: RouteObject[] = [
           { path: 'ministries', element: <MinistriesPage /> },
           { path: 'categories', element: <CategoriesPage /> },
           { path: 'reports', element: <ReportsPage /> },
+          { path: 'subscription', element: <SubscriptionPage /> },
           { path: 'settings', element: <SettingsPage /> },
         ],
       },
