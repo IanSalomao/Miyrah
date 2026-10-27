@@ -1,9 +1,11 @@
 import { createBrowserRouter, type RouteObject } from 'react-router-dom'
 import { AuthLayout } from '@/components/auth-layout/auth-layout'
+import { CompleteSignupPage } from '@/features/auth/complete-signup-page'
 import { ForgotPasswordPage } from '@/features/auth/forgot-password-page'
 import { LoginPage } from '@/features/auth/login-page'
 import { RegisterPage } from '@/features/auth/register-page'
 import { ResetPasswordPage } from '@/features/auth/reset-password-page'
+import { OnboardingProfilePage } from '@/features/onboarding/onboarding-page'
 import { CategoriesPage } from '@/features/categories/pages/categories-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { HomePage } from '@/features/home/pages/home-page'
@@ -24,6 +26,7 @@ export const routes: RouteObject[] = [
     children: [
       { path: '/login', element: <LoginPage /> },
       { path: '/register', element: <RegisterPage /> },
+      { path: '/register/complete', element: <CompleteSignupPage /> },
       { path: '/forgot-password', element: <ForgotPasswordPage /> },
       { path: '/reset-password', element: <ResetPasswordPage /> },
     ],
@@ -31,6 +34,9 @@ export const routes: RouteObject[] = [
   {
     element: <ProtectedRoute />,
     children: [
+      // Etapa 2 do cadastro: protegida (a conta já existe), mas sem a sidebar —
+      // é uma tela focada de onboarding.
+      { path: 'onboarding', element: <OnboardingProfilePage /> },
       {
         element: <ProtectedLayout />,
         children: [

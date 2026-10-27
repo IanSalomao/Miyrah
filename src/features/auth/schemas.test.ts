@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
+  completeSignupSchema,
   forgotPasswordSchema,
   loginSchema,
-  registerSchema,
+  requestVerificationSchema,
   resetPasswordSchema,
 } from './schemas'
 
@@ -35,27 +36,42 @@ describe('loginSchema', () => {
   })
 })
 
-describe('registerSchema', () => {
+describe('requestVerificationSchema', () => {
+  it('exige e-mail válido', () => {
+    expect(
+      requestVerificationSchema.safeParse({ email: 'contato@igrejacentral.com.br' }).success,
+    ).toBe(true)
+    expect(requestVerificationSchema.safeParse({ email: 'invalido' }).success).toBe(false)
+  })
+})
+
+describe('completeSignupSchema', () => {
   const base = {
     name: 'Igreja Batista Central',
-    email: 'contato@igrejacentral.com.br',
-    phone: '',
     password: 'senhaSegura123',
     confirmPassword: 'senhaSegura123',
     acceptTerms: true,
   }
 
-  it('aceita dados válidos com os termos aceitos', () => {
-    expect(registerSchema.safeParse(base).success).toBe(true)
+  it('aceita nome, senha e termos aceitos', () => {
+    expect(completeSignupSchema.safeParse(base).success).toBe(true)
+  })
+
+  it('rejeita nome com menos de 2 caracteres', () => {
+    expect(completeSignupSchema.safeParse({ ...base, name: 'A' }).success).toBe(false)
   })
 
   it('rejeita senha com menos de 8 caracteres', () => {
-    const result = registerSchema.safeParse({ ...base, password: '123', confirmPassword: '123' })
+    const result = completeSignupSchema.safeParse({
+      ...base,
+      password: '123',
+      confirmPassword: '123',
+    })
     expect(result.success).toBe(false)
   })
 
   it('rejeita quando confirmPassword não bate com password', () => {
-    const result = registerSchema.safeParse({ ...base, confirmPassword: 'outraSenha123' })
+    const result = completeSignupSchema.safeParse({ ...base, confirmPassword: 'outraSenha123' })
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.issues.some((issue) => issue.path.includes('confirmPassword'))).toBe(
@@ -65,7 +81,7 @@ describe('registerSchema', () => {
   })
 
   it('rejeita quando os termos não foram aceitos', () => {
-    const result = registerSchema.safeParse({ ...base, acceptTerms: false })
+    const result = completeSignupSchema.safeParse({ ...base, acceptTerms: false })
     expect(result.success).toBe(false)
     if (!result.success) {
       expect(result.error.issues.some((issue) => issue.path.includes('acceptTerms'))).toBe(true)

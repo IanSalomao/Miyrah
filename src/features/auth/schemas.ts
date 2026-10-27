@@ -16,12 +16,18 @@ export const loginSchema = z.object({
 
 export type LoginFormValues = z.infer<typeof loginSchema>
 
-// wiki/pages/page_register.md — confirmPassword e aceite dos termos são só front (não vão à API).
-export const registerSchema = z
+// Cadastro, Etapa 0 (tela /register): só o e-mail para enviar o link de verificação.
+export const requestVerificationSchema = z.object({
+  email: emailSchema,
+})
+
+export type RequestVerificationFormValues = z.infer<typeof requestVerificationSchema>
+
+// Cadastro, Etapa 1 (tela /register/complete): nome + senha criam a conta.
+// confirmPassword e aceite dos termos são só front (não vão à API).
+export const completeSignupSchema = z
   .object({
     name: z.string().min(2, 'Informe o nome da igreja.'),
-    email: emailSchema,
-    phone: z.string().optional(),
     password: passwordMinSchema,
     confirmPassword: z.string().min(1, 'Confirme a senha.'),
     acceptTerms: z.boolean(),
@@ -35,7 +41,7 @@ export const registerSchema = z
     path: ['acceptTerms'],
   })
 
-export type RegisterFormValues = z.infer<typeof registerSchema>
+export type CompleteSignupFormValues = z.infer<typeof completeSignupSchema>
 
 // wiki/pages/page_forgot_password.md — Passo 1.
 export const forgotPasswordSchema = z.object({

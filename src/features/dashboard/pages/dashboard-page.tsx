@@ -8,6 +8,7 @@ import { MetricCard } from '@/components/metric-card'
 import { LineChart } from '@/components/line-chart'
 import { PieChart } from '@/components/pie-chart'
 import { BarChart } from '@/components/bar-chart'
+import { useAccount } from '@/components/side-bar/hooks/use-account'
 import { ApiError } from '@/lib/api-client'
 import type { ComparisonGroupBy, DashboardSummary, LineGranularity } from '@/types'
 import { DashboardFilterBar } from '../components/dashboard-filter-bar'
@@ -26,6 +27,8 @@ import { useDashboardLine } from '../hooks/use-dashboard-line'
 import { useDashboardByCategory } from '../hooks/use-dashboard-by-category'
 import { useDashboardComparison } from '../hooks/use-dashboard-comparison'
 import { useDashboardFilterOptions } from '../hooks/use-dashboard-filter-options'
+import { useMarkOnboarding } from '../hooks/use-mark-onboarding'
+import { TrialWelcomeDialog } from '../components/trial-welcome-dialog'
 
 function errorMessage(error: unknown): string | undefined {
   return error instanceof ApiError ? error.message : undefined
@@ -76,6 +79,17 @@ export function DashboardPage() {
 
   const { categories, ministries } = useDashboardFilterOptions()
 
+  // Popup de boas-vindas no primeiro acesso: aparece enquanto onboardedAt é null.
+  const accountQuery = useAccount()
+  const markOnboarding = useMarkOnboarding()
+  const [welcomeDismissed, setWelcomeDismissed] = useState(false)
+  const showWelcome = !welcomeDismissed && accountQuery.data?.onboardedAt === null
+
+  function dismissWelcome() {
+    setWelcomeDismissed(true)
+    markOnboarding.mutate()
+  }
+
   // Saldo isolado — carregado uma vez, imune a qualquer filtro.
   const balanceQuery = useDashboardBalance()
 
@@ -96,6 +110,8 @@ export function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
+      <TrialWelcomeDialog open={showWelcome} onDismiss={dismissWelcome} />
+
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
         <p className="text-sm text-muted-foreground">

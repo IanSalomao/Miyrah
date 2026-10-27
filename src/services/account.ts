@@ -21,6 +21,11 @@ export function changePassword(payload: ChangePasswordPayload): Promise<MessageR
   return apiClient.patch('/account/password', payload)
 }
 
+/** Marca o primeiro acesso como concluído (fecha o popup de início do trial). */
+export function markOnboardingSeen(): Promise<MessageResponse> {
+  return apiClient.post('/account/onboarding-seen', undefined)
+}
+
 export function deleteAccount(payload: DeleteAccountPayload): Promise<MessageResponse> {
   return apiClient.del('/account', payload)
 }

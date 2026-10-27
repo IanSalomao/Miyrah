@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ApiError } from '@/lib/api-client'
 import type {
@@ -21,6 +21,8 @@ const {
   getDashboardComparisonMock,
   listCategoriesMock,
   listMinistriesMock,
+  getAccountMock,
+  markOnboardingSeenMock,
 } = vi.hoisted(() => ({
   getDashboardBalanceMock: vi.fn(),
   getDashboardSummaryMock: vi.fn(),
@@ -31,6 +33,8 @@ const {
   getDashboardComparisonMock: vi.fn(),
   listCategoriesMock: vi.fn(),
   listMinistriesMock: vi.fn(),
+  getAccountMock: vi.fn(),
+  markOnboardingSeenMock: vi.fn(),
 }))
 
 vi.mock('@/services', () => ({
@@ -43,7 +47,28 @@ vi.mock('@/services', () => ({
   getDashboardComparison: getDashboardComparisonMock,
   listCategories: listCategoriesMock,
   listMinistries: listMinistriesMock,
+  getAccount: getAccountMock,
+  markOnboardingSeen: markOnboardingSeenMock,
 }))
+
+// Conta com onboardedAt preenchido: nestes testes o popup de boas-vindas não
+// deve aparecer (só interessa o conteúdo do dashboard).
+const ACCOUNT = {
+  id: 'ch1',
+  name: 'Igreja Teste',
+  email: 'contato@teste.com',
+  phone: null,
+  cnpj: null,
+  denomination: null,
+  onboardedAt: '2026-07-01T12:00:00.000Z',
+  createdAt: '2026-07-01T12:00:00.000Z',
+  updatedAt: '2026-07-01T12:00:00.000Z',
+}
+
+beforeEach(() => {
+  getAccountMock.mockResolvedValue(ACCOUNT)
+  markOnboardingSeenMock.mockResolvedValue({ message: 'ok' })
+})
 
 const BALANCE: DashboardBalance = { balance: 21300 }
 
@@ -174,6 +199,27 @@ describe('DashboardPage', () => {
     expect(await screen.findByText('Saldo')).toBeInTheDocument()
     await waitFor(() => {
       expect(screen.getByText(/\+R\$\s?21\.300,00/)).toBeInTheDocument()
+    })
+  })
+
+  it('mostra o popup de boas-vindas quando onboardedAt é null e marca o acesso ao fechar', async () => {
+    mockHappyPath()
+    getAccountMock.mockResolvedValue({ ...ACCOUNT, onboardedAt: null })
+
+    renderPage()
+
+    const title = await screen.findByText('Seu teste grátis de 14 dias começou!')
+    expect(title).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Começar a usar' }))
+
+    await waitFor(() => {
+      expect(markOnboardingSeenMock).toHaveBeenCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(
+        screen.queryByText('Seu teste grátis de 14 dias começou!'),
+      ).not.toBeInTheDocument()
     })
   })
 })

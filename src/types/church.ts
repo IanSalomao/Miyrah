@@ -7,6 +7,8 @@ export interface Church {
   phone: string | null
   cnpj: string | null
   denomination: string | null
+  /** Quando o primeiro acesso foi concluído; null = ainda deve ver o popup de início do trial. */
+  onboardedAt: string | null
   createdAt: string
   updatedAt: string
 }
