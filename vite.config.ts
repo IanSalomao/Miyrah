@@ -13,6 +13,16 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    fs: {
+      // Permite o dev server servir os arquivos do pacote miyrah-design-system
+      // (repo irmão, linkado via `file:` — fica fora da raiz do projeto).
+      allow: [
+        fileURLToPath(new URL('.', import.meta.url)),
+        fileURLToPath(new URL('../miyrah-design-system', import.meta.url)),
+      ],
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
