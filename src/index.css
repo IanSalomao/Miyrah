@@ -1,21 +1,25 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
-@import './styles/fonts.css';
+
+/* Design system compartilhado (miyrah-design-system):
+   - fonts-system.css: só a Geist (o app NUNCA carrega a Fraunces, que é de marca)
+   - tokens.css: tokens de cor, raio, sombra, espaçamento e movimento como CSS vars */
+@import 'miyrah-design-system/fonts-system.css';
+@import 'miyrah-design-system/tokens.css';
 
 /* Variante dark declarada para os componentes shadcn compilarem `dark:*`,
-   mas o tema é único e claro (design_system.md — base "Papel" morna):
+   mas o tema é único e claro (design system — base "surface-page"):
    nenhuma classe .dark é aplicada em lugar algum. */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Tipografia (design_system.md)
-     - Plus Jakarta Sans: única fonte do sistema (corpo, títulos, tabelas, valores)
-     - Recoleta: exceção — título das páginas de autenticação (aplicada via classe font-display) */
-  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Recoleta', ui-serif, Georgia, serif;
+  /* Tipografia — Geist é a fonte única do sistema. Fraunces não entra no app;
+     `font-display` (títulos de auth/404) e `font-mono` (valores) agora são Geist. */
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-sans);
   --font-heading: var(--font-sans);
-  --font-mono: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-sans);
 
   /* Cores base shadcn → tokens Miyrah */
   --color-background: var(--background);
@@ -38,7 +42,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Semânticos financeiros — Entradas/Saídas (nunca são cor de categoria) */
+  /* Semânticos financeiros — Entradas/Saídas (vêm do pacote; nunca são cor de categoria) */
   --color-income: var(--income);
   --color-income-foreground: var(--income-foreground);
   --color-expense: var(--expense);
@@ -69,8 +73,7 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* Sombras azul-tingidas, bem definidas — profundidade espacial
-     (design_system.md → "divisão de espaços por elevação"). */
+  /* Sombras azul-tingidas (iguais às do design system). */
   --shadow-xs: 0 1px 2px rgba(18, 32, 58, 0.06);
   --shadow-sm: 0 1px 3px rgba(18, 32, 58, 0.09), 0 1px 2px rgba(18, 32, 58, 0.06);
   --shadow-md: 0 4px 12px rgba(18, 32, 58, 0.1), 0 2px 4px rgba(18, 32, 58, 0.06);
@@ -80,79 +83,61 @@
 }
 
 :root {
-  /* Raio generoso/orgânico — leveza e ar (imagery de referência) */
-  --radius: 0.75rem;
+  /* Raio base — cards em 14px (design system radius-lg). */
+  --radius: 0.875rem;
 
   /* ============================================================
-     Tokens de marca Miyrah (ver wiki/design_system.md)
-     Paleta monocromática: azul vibrante sobre base clara e morna.
+     Semânticos shadcn → tokens do pacote miyrah-design-system.
+     Os valores (hex) vivem em miyrah-design-system/tokens.css.
      ============================================================ */
-  --papel: #f8f8f8; /* Fundo da página — bege quase branco, morno */
-  --superficie: #fcfbf8; /* Card — branco morno, 1º nível de elevação */
-  --elevado: #ffffff; /* Drawer/popover/dropdown — branco puro, topo */
-  --tinta: #12203a; /* Texto principal — quase-preto com subtom azul */
-  --tinta-muted: #5a6473; /* Texto secundário */
-  --tinta-subtle: #8a93a1; /* Texto terciário / captions */
-  --azul: #1472e6; /* Accent — único protagonista cromático */
-  --azul-hover: #0f5bc0; /* Estado pressed / hover mais forte */
-  --azul-soft: #e4effd; /* Tint de hover, item selecionado, badge */
-  --navy: #1b2f9e; /* Tom escuro de apoio (charts, momentos) */
-  --linha: #d9d6cc; /* Contorno padrão, bem definido */
-  --linha-forte: #b6c0c4; /* Contorno de ênfase */
-  --entradas: #1f9d5f; /* Semântico — valores de entrada (+) */
-  --saidas: #e0524d; /* Semântico — valores de saída (−) */
-
-  /* Papel → fundo; Tinta → texto */
-  --background: var(--papel);
-  --foreground: var(--tinta);
-  --card: var(--superficie);
-  --card-foreground: var(--tinta);
-  --popover: var(--elevado);
-  --popover-foreground: var(--tinta);
+  --background: var(--surface-page);
+  --foreground: var(--ink);
+  --card: var(--surface-card);
+  --card-foreground: var(--ink);
+  --popover: var(--surface-raised);
+  --popover-foreground: var(--ink);
 
   /* Azul → accent de interação (primary) */
-  --primary: var(--azul);
-  --primary-foreground: #ffffff;
+  --primary: var(--blue);
+  --primary-foreground: var(--ink-on-accent);
 
-  /* Neutros de apoio, mornos */
-  --secondary: #eae6dc;
-  --secondary-foreground: var(--tinta);
-  --muted: #eae6dc;
-  --muted-foreground: var(--tinta-muted);
-  --accent: var(--azul-soft); /* hover/seleção com tint azul */
-  --accent-foreground: var(--azul-hover);
+  /* Neutros de apoio, frios */
+  --secondary: var(--line);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-page);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--blue-soft); /* hover/seleção com tint azul */
+  --accent-foreground: var(--blue-hover);
 
   /* Saídas → cor destrutiva (excluir etc.) */
-  --destructive: var(--saidas);
-  --destructive-foreground: #ffffff;
+  --destructive: var(--expense);
+  --destructive-foreground: var(--ink-on-accent);
 
   /* Linha → bordas e réguas finas; foco em Azul */
-  --border: var(--linha);
-  --input: var(--linha);
-  --ring: var(--azul);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--focus-ring);
 
-  /* Semânticos financeiros */
-  --income: var(--entradas);
-  --income-foreground: #ffffff;
-  --expense: var(--saidas);
-  --expense-foreground: #ffffff;
+  /* Foreground dos semânticos financeiros (income/expense vêm do pacote) */
+  --income-foreground: var(--ink-on-accent);
+  --expense-foreground: var(--ink-on-accent);
 
   /* Gráficos (fallback) — rampa azul + os dois semânticos */
-  --chart-1: var(--azul);
-  --chart-2: var(--navy);
+  --chart-1: var(--blue);
+  --chart-2: var(--blue-navy);
   --chart-3: #6aa8f2;
-  --chart-4: var(--entradas);
-  --chart-5: var(--saidas);
+  --chart-4: var(--income);
+  --chart-5: var(--expense);
 
-  /* Sidebar — painel branco elevado, destacado do Papel da página */
-  --sidebar: var(--elevado);
-  --sidebar-foreground: var(--tinta);
-  --sidebar-primary: var(--azul);
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: var(--azul-soft); /* item de navegação ativo */
-  --sidebar-accent-foreground: var(--azul-hover);
-  --sidebar-border: var(--linha);
-  --sidebar-ring: var(--azul);
+  /* Sidebar — painel elevado, destacado da página */
+  --sidebar: var(--surface-raised);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--blue);
+  --sidebar-primary-foreground: var(--ink-on-accent);
+  --sidebar-accent: var(--blue-soft); /* item de navegação ativo */
+  --sidebar-accent-foreground: var(--blue-hover);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--focus-ring);
 }
 
 @layer base {
@@ -162,7 +147,7 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
-  /* Tabular figures em todo valor numérico (font-mono aponta para Plus Jakarta Sans) */
+  /* Tabular figures em todo valor numérico (font-mono aponta para Geist) */
   .font-mono {
     font-variant-numeric: tabular-nums;
   }

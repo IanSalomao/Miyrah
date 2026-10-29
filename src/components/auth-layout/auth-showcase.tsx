@@ -1,5 +1,7 @@
 // Vitrine decorativa do painel direito das telas de autenticação (templates/auth — Claude Design).
-// Transcrição literal do mockup do design (canvas fixo de 940x940, cores em hex, posições em px):
+// Transcrição literal do mockup do design (canvas fixo de 940x940, cores em hex, posições em px).
+// Fonte dos valores = Geist (fonte do sistema). TODO opcional: migrar os hex deste mock para os
+// tokens do design system (income/expense/blue novos) numa repaginação futura da vitrine.
 // é uma composição puramente ilustrativa — não precisa ser responsiva nem usar os tokens do tema,
 // só precisa ficar idêntica ao design. Some abaixo do breakpoint xl (ver auth-layout.tsx).
 // Dados fictícios, sem chamada à API — por isso o container raiz é `aria-hidden`.
@@ -306,7 +308,7 @@ export function AuthShowcase() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
                   <span
                     style={{
-                      fontFamily: 'Plus Jakarta Sans',
+                      fontFamily: 'Geist',
                       fontSize: 20,
                       fontWeight: 700,
                       color: '#1f9d5f',
@@ -355,7 +357,7 @@ export function AuthShowcase() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6 }}>
                   <span
                     style={{
-                      fontFamily: 'Plus Jakarta Sans',
+                      fontFamily: 'Geist',
                       fontSize: 20,
                       fontWeight: 700,
                       color: '#e0524d',
@@ -495,7 +497,7 @@ export function AuthShowcase() {
             <p
               style={{
                 margin: '12px 0 0',
-                fontFamily: 'Plus Jakarta Sans',
+                fontFamily: 'Geist',
                 fontSize: 27,
                 fontWeight: 800,
                 color: '#1472e6',
@@ -633,7 +635,7 @@ export function AuthShowcase() {
                 <p style={{ margin: '0 0 8px', fontWeight: 700, color: '#1c2b45' }}>Junho</p>
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: '#48566a', fontWeight: 600 }}>
                   <span>Entradas</span>
-                  <span style={{ fontFamily: 'Plus Jakarta Sans', color: '#1f9d5f' }}>R$ 18.720</span>
+                  <span style={{ fontFamily: 'Geist', color: '#1f9d5f' }}>R$ 18.720</span>
                 </div>
                 <div
                   style={{
@@ -645,7 +647,7 @@ export function AuthShowcase() {
                   }}
                 >
                   <span>Saídas</span>
-                  <span style={{ fontFamily: 'Plus Jakarta Sans', color: '#e0524d' }}>R$ 7.210</span>
+                  <span style={{ fontFamily: 'Geist', color: '#e0524d' }}>R$ 7.210</span>
                 </div>
               </div>
             </div>
@@ -724,7 +726,7 @@ export function AuthShowcase() {
                   </div>
                   <span
                     style={{
-                      fontFamily: 'Plus Jakarta Sans',
+                      fontFamily: 'Geist',
                       fontSize: 13,
                       fontWeight: 700,
                       color: transaction.kind === 'income' ? '#1f9d5f' : '#e0524d',
