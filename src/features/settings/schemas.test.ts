@@ -68,8 +68,8 @@ describe('toUpdateAccountPayload', () => {
 describe('changePasswordSchema', () => {
   const validPassword = {
     currentPassword: 'senhaAtual123',
-    newPassword: 'novaSenhaSegura456',
-    confirmNewPassword: 'novaSenhaSegura456',
+    newPassword: 'NovaSenhaSegura456!',
+    confirmNewPassword: 'NovaSenhaSegura456!',
   }
 
   it('aceita um payload válido', () => {

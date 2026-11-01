@@ -104,7 +104,9 @@ export function ProfileTab() {
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5 sm:col-span-2">
-              <Label htmlFor="settings-name">Nome da Igreja</Label>
+              <Label htmlFor="settings-name" required>
+                Nome da Igreja
+              </Label>
               <Input
                 id="settings-name"
                 autoComplete="organization"
@@ -115,7 +117,9 @@ export function ProfileTab() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="settings-email">Email</Label>
+              <Label htmlFor="settings-email" required>
+                Email
+              </Label>
               <Input
                 id="settings-email"
                 type="email"
@@ -127,7 +131,9 @@ export function ProfileTab() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="settings-phone">Telefone</Label>
+              <Label htmlFor="settings-phone" optional>
+                Telefone
+              </Label>
               <Input
                 id="settings-phone"
                 type="tel"
@@ -142,8 +148,8 @@ export function ProfileTab() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="settings-cnpj">
-                CNPJ <span className="font-normal text-muted-foreground">· opcional</span>
+              <Label htmlFor="settings-cnpj" optional>
+                CNPJ
               </Label>
               <Input
                 id="settings-cnpj"
@@ -164,8 +170,8 @@ export function ProfileTab() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="settings-denomination">
-                Denominação <span className="font-normal text-muted-foreground">· opcional</span>
+              <Label htmlFor="settings-denomination" optional>
+                Denominação
               </Label>
               <Input
                 id="settings-denomination"

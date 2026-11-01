@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   daysUntil,
+  formatAmountInput,
   formatCents,
   formatCompactNumber,
   formatCurrency,
@@ -10,10 +11,37 @@ import {
   getInitials,
   maskCnpj,
   maskPhone,
+  parseAmountInput,
 } from './format'
 
 // Normaliza espaços (Intl usa NBSP/narrow-NBSP entre "R$" e o número).
 const norm = (s: string) => s.replace(/\s/g, ' ')
+
+describe('parseAmountInput', () => {
+  it('lê os dígitos como centavos (estilo banco)', () => {
+    expect(parseAmountInput('')).toBe(0)
+    expect(parseAmountInput('5')).toBe(0.05)
+    expect(parseAmountInput('1250')).toBe(12.5)
+    expect(parseAmountInput('10000')).toBe(100)
+  })
+
+  it('ignora separadores e qualquer caractere não numérico', () => {
+    expect(parseAmountInput('1.234,56')).toBe(1234.56)
+    expect(parseAmountInput('R$ 12,00')).toBe(12)
+  })
+})
+
+describe('formatAmountInput', () => {
+  it('formata com 2 casas e sem símbolo', () => {
+    expect(norm(formatAmountInput(1234.5))).toBe('1.234,50')
+    expect(norm(formatAmountInput(100))).toBe('100,00')
+  })
+
+  it('retorna vazio para 0 ou valor inválido (mostra o placeholder)', () => {
+    expect(formatAmountInput(0)).toBe('')
+    expect(formatAmountInput(Number.NaN)).toBe('')
+  })
+})
 
 describe('formatCurrency', () => {
   it('formata em BRL com o sinal natural', () => {

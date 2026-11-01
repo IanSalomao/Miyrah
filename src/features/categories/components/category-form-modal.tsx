@@ -116,18 +116,24 @@ export function CategoryFormModal({
       {errorMessage && <p className="text-sm text-destructive">{errorMessage}</p>}
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="category-name">Nome</Label>
+        <Label htmlFor="category-name" required>
+          Nome
+        </Label>
         <Input id="category-name" aria-invalid={Boolean(errors.name)} {...register('name')} />
         {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="category-description">Descrição</Label>
+        <Label htmlFor="category-description" optional>
+          Descrição
+        </Label>
         <Textarea id="category-description" {...register('description')} />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="category-type">Tipo</Label>
+        <Label htmlFor="category-type" required>
+          Tipo
+        </Label>
         <Controller
           control={control}
           name="type"
@@ -151,7 +157,9 @@ export function CategoryFormModal({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="category-color">Cor</Label>
+        <Label htmlFor="category-color" required>
+          Cor
+        </Label>
         <Controller
           control={control}
           name="color"

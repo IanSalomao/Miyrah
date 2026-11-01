@@ -93,7 +93,9 @@ export function MinistryFormModal({ open, onOpenChange, ministry }: MinistryForm
       loading={isSubmitting}
     >
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="ministry-name">Nome</Label>
+        <Label htmlFor="ministry-name" required>
+          Nome
+        </Label>
         <Input
           id="ministry-name"
           aria-invalid={Boolean(form.formState.errors.name)}
@@ -105,12 +107,14 @@ export function MinistryFormModal({ open, onOpenChange, ministry }: MinistryForm
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="ministry-description">Descrição</Label>
+        <Label htmlFor="ministry-description" optional>
+          Descrição
+        </Label>
         <Textarea id="ministry-description" {...form.register('description')} />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label>Responsável</Label>
+        <Label optional>Responsável</Label>
         <MemberPicker
           value={form.watch('responsibleId') ?? null}
           label={responsibleLabel}

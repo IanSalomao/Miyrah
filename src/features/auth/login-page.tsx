@@ -82,7 +82,7 @@ export function LoginPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>E-mail</FormLabel>
+                <FormLabel required>E-mail</FormLabel>
                 <FormControl>
                   <Input type="email" autoComplete="email" {...field} />
                 </FormControl>
@@ -96,7 +96,7 @@ export function LoginPage() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Senha</FormLabel>
+                <FormLabel required>Senha</FormLabel>
                 <FormControl>
                   <PasswordInput autoComplete="current-password" {...field} />
                 </FormControl>

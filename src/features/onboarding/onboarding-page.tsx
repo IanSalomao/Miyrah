@@ -97,7 +97,7 @@ export function OnboardingProfilePage() {
               name="denomination"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Denominação</FormLabel>
+                  <FormLabel optional>Denominação</FormLabel>
                   <FormControl>
                     <Input placeholder="Ex.: Batista, Assembleia de Deus" {...field} />
                   </FormControl>
@@ -111,7 +111,7 @@ export function OnboardingProfilePage() {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Telefone</FormLabel>
+                  <FormLabel optional>Telefone</FormLabel>
                   <FormControl>
                     <Input
                       type="tel"
@@ -131,7 +131,7 @@ export function OnboardingProfilePage() {
               name="cnpj"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>CNPJ</FormLabel>
+                  <FormLabel optional>CNPJ</FormLabel>
                   <FormControl>
                     <Input
                       inputMode="text"

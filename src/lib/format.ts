@@ -6,6 +6,14 @@ const currencyFormatter = new Intl.NumberFormat('pt-BR', {
   currency: 'BRL',
 })
 
+// Valor sem símbolo de moeda, sempre com 2 casas (ex.: 1234.5 → "1.234,50").
+// Usado pelo campo de entrada de valor (CurrencyInput), onde o "R$" é um
+// adorno fixo fora do <input>.
+const amountInputFormatter = new Intl.NumberFormat('pt-BR', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})
+
 const dateFormatter = new Intl.DateTimeFormat('pt-BR', {
   day: '2-digit',
   month: '2-digit',
@@ -44,6 +52,27 @@ export function formatSignedCurrency(value: number): string {
 /** Valor em centavos (padrão do gateway de pagamento) como moeda BRL — ex.: 2900 → R$ 29,00. */
 export function formatCents(cents: number): string {
   return currencyFormatter.format(cents / 100)
+}
+
+/**
+ * Formata um valor em reais para exibição no campo de digitação (sem "R$",
+ * sempre 2 casas): 1234.5 → "1.234,50". `0`/`NaN` retornam "" para que o campo
+ * mostre o placeholder "0,00".
+ */
+export function formatAmountInput(value: number): string {
+  if (!Number.isFinite(value) || value === 0) return ''
+  return amountInputFormatter.format(value)
+}
+
+/**
+ * Lê o que foi digitado no campo de valor como centavos, no estilo dos apps de
+ * banco: só os dígitos importam e as duas últimas casas são os centavos.
+ * "" → 0; "5" → 5 (R$ 0,05); "1250" → 1250 (R$ 12,50). Devolve o valor em reais.
+ */
+export function parseAmountInput(raw: string): number {
+  const digits = raw.replace(/\D/g, '')
+  if (digits === '') return 0
+  return Number(digits) / 100
 }
 
 /** Uma casa decimal com vírgula, sem zeros à toa (1,5 / 15). */

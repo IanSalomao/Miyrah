@@ -48,8 +48,8 @@ describe('requestVerificationSchema', () => {
 describe('completeSignupSchema', () => {
   const base = {
     name: 'Igreja Batista Central',
-    password: 'senhaSegura123',
-    confirmPassword: 'senhaSegura123',
+    password: 'SenhaSegura123!',
+    confirmPassword: 'SenhaSegura123!',
     acceptTerms: true,
   }
 
@@ -66,6 +66,15 @@ describe('completeSignupSchema', () => {
       ...base,
       password: '123',
       confirmPassword: '123',
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejeita senha sem símbolo (regra de composição)', () => {
+    const result = completeSignupSchema.safeParse({
+      ...base,
+      password: 'SenhaSegura123',
+      confirmPassword: 'SenhaSegura123',
     })
     expect(result.success).toBe(false)
   })
@@ -99,11 +108,11 @@ describe('forgotPasswordSchema', () => {
 })
 
 describe('resetPasswordSchema', () => {
-  it('exige senha mínima de 8 caracteres e confirmação igual', () => {
+  it('exige senha forte e confirmação igual', () => {
     expect(
       resetPasswordSchema.safeParse({
-        newPassword: 'novaSenha123',
-        confirmNewPassword: 'novaSenha123',
+        newPassword: 'NovaSenha123!',
+        confirmNewPassword: 'NovaSenha123!',
       }).success,
     ).toBe(true)
 
@@ -113,8 +122,8 @@ describe('resetPasswordSchema', () => {
 
     expect(
       resetPasswordSchema.safeParse({
-        newPassword: 'novaSenha123',
-        confirmNewPassword: 'outraSenha456',
+        newPassword: 'NovaSenha123!',
+        confirmNewPassword: 'OutraSenha456!',
       }).success,
     ).toBe(false)
   })

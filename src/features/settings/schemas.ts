@@ -1,5 +1,6 @@
 // Schemas dos formulários da tela de Configurações — wiki/api/account.md.
 import { z } from 'zod'
+import { strongPasswordSchema } from '@/lib/password'
 import type { UpdateAccountPayload } from '@/types'
 
 // Mesmo formato produzido por `maskCnpj` (lib/format.ts) — aceita numérico e
@@ -32,13 +33,11 @@ export function toUpdateAccountPayload(values: ProfileFormValues): UpdateAccount
   }
 }
 
-const newPasswordSchema = z.string().min(8, 'A nova senha deve ter no mínimo 8 caracteres.')
-
 // "Confirmar Nova Senha" é validado só no front-end — não é enviado à API (wiki/api/account.md).
 export const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(1, 'Informe a senha atual.'),
-    newPassword: newPasswordSchema,
+    newPassword: strongPasswordSchema,
     confirmNewPassword: z.string().min(1, 'Confirme a nova senha.'),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {
