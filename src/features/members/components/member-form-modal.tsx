@@ -108,7 +108,9 @@ export function MemberFormModal({ open, onOpenChange, member }: MemberFormModalP
       submitLabel={isEditing ? 'Salvar' : 'Adicionar'}
     >
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="member-name">Nome</Label>
+        <Label htmlFor="member-name" required>
+          Nome
+        </Label>
         <Input
           id="member-name"
           autoFocus
@@ -120,7 +122,9 @@ export function MemberFormModal({ open, onOpenChange, member }: MemberFormModalP
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="member-birth-date">Data de Nascimento</Label>
+          <Label htmlFor="member-birth-date" optional>
+            Data de Nascimento
+          </Label>
           <Input
             id="member-birth-date"
             type="date"
@@ -133,7 +137,9 @@ export function MemberFormModal({ open, onOpenChange, member }: MemberFormModalP
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="member-baptism-date">Data de Batismo</Label>
+          <Label htmlFor="member-baptism-date" optional>
+            Data de Batismo
+          </Label>
           <Input
             id="member-baptism-date"
             type="date"
@@ -147,7 +153,9 @@ export function MemberFormModal({ open, onOpenChange, member }: MemberFormModalP
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="member-email">Email</Label>
+        <Label htmlFor="member-email" optional>
+          Email
+        </Label>
         <Input
           id="member-email"
           type="email"
@@ -158,7 +166,9 @@ export function MemberFormModal({ open, onOpenChange, member }: MemberFormModalP
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="member-phone">Telefone</Label>
+        <Label htmlFor="member-phone" optional>
+          Telefone
+        </Label>
         <Input
           id="member-phone"
           type="tel"

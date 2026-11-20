@@ -214,11 +214,11 @@ describe('TransactionFormModal — modo criação com lançamentos encadeados', 
     await selectCategory(user, 0, 'Dízimo')
     await selectCategory(user, 1, 'Dízimo')
 
+    // Campo de valor no estilo banco: os dígitos entram como centavos, então
+    // "10000" = R$ 100,00 e "20000" = R$ 200,00.
     const valueInputs = screen.getAllByLabelText('Valor')
-    await user.clear(valueInputs[0])
-    await user.type(valueInputs[0], '100')
-    await user.clear(valueInputs[1])
-    await user.type(valueInputs[1], '200')
+    await user.type(valueInputs[0], '10000')
+    await user.type(valueInputs[1], '20000')
 
     await user.click(screen.getByRole('button', { name: 'Salvar 2 transações' }))
 

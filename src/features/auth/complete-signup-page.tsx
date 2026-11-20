@@ -7,7 +7,7 @@ import { Loader2, TriangleAlert } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '@/app/auth-context'
-import { PasswordInput } from '@/components/password-input'
+import { PasswordInput, PasswordRequirements } from '@/components/password-input'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -146,7 +146,7 @@ export function CompleteSignupPage() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nome da Igreja</FormLabel>
+                <FormLabel required>Nome da Igreja</FormLabel>
                 <FormControl>
                   <Input autoComplete="organization" {...field} />
                 </FormControl>
@@ -160,10 +160,11 @@ export function CompleteSignupPage() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Senha</FormLabel>
+                <FormLabel required>Senha</FormLabel>
                 <FormControl>
                   <PasswordInput autoComplete="new-password" {...field} />
                 </FormControl>
+                <PasswordRequirements value={field.value} className="mt-1" />
                 <FormMessage />
               </FormItem>
             )}
@@ -174,7 +175,7 @@ export function CompleteSignupPage() {
             name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirmar Senha</FormLabel>
+                <FormLabel required>Confirmar Senha</FormLabel>
                 <FormControl>
                   <PasswordInput autoComplete="new-password" {...field} />
                 </FormControl>

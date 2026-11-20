@@ -1,9 +1,9 @@
 // Card "Alterar senha" — aba Segurança. wiki/api/account.md (PATCH /v1/account/password).
 import { useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { Check } from 'lucide-react'
-import { PasswordInput } from '@/components/password-input'
+import { PasswordInput, PasswordRequirements } from '@/components/password-input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { ApiError } from '@/lib/api-client'
@@ -21,6 +21,7 @@ export function ChangePasswordCard() {
   const [saved, setSaved] = useState(false)
 
   const {
+    control,
     register,
     handleSubmit,
     reset,
@@ -30,6 +31,9 @@ export function ChangePasswordCard() {
     resolver: zodResolver(changePasswordSchema),
     defaultValues: EMPTY_VALUES,
   })
+
+  // Valor da nova senha para alimentar o checklist de requisitos ao vivo.
+  const newPassword = useWatch({ control, name: 'newPassword' })
 
   function onSubmit(values: ChangePasswordFormValues) {
     setSaved(false)
@@ -61,7 +65,9 @@ export function ChangePasswordCard() {
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <div className="flex max-w-md flex-col gap-4 p-6">
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="settings-current-password">Senha Atual</Label>
+            <Label htmlFor="settings-current-password" required>
+              Senha Atual
+            </Label>
             <PasswordInput
               id="settings-current-password"
               autoComplete="current-password"
@@ -74,20 +80,25 @@ export function ChangePasswordCard() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="settings-new-password">Nova Senha</Label>
+            <Label htmlFor="settings-new-password" required>
+              Nova Senha
+            </Label>
             <PasswordInput
               id="settings-new-password"
               autoComplete="new-password"
               aria-invalid={Boolean(errors.newPassword)}
               {...register('newPassword')}
             />
+            <PasswordRequirements value={newPassword} className="mt-1" />
             {errors.newPassword && (
               <p className="text-sm text-destructive">{errors.newPassword.message}</p>
             )}
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="settings-confirm-password">Confirmar Nova Senha</Label>
+            <Label htmlFor="settings-confirm-password" required>
+              Confirmar Nova Senha
+            </Label>
             <PasswordInput
               id="settings-confirm-password"
               autoComplete="new-password"

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleCheck, TriangleAlert } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { PasswordInput } from '@/components/password-input'
+import { PasswordInput, PasswordRequirements } from '@/components/password-input'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -133,10 +133,11 @@ export function ResetPasswordPage() {
             name="newPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nova Senha</FormLabel>
+                <FormLabel required>Nova Senha</FormLabel>
                 <FormControl>
                   <PasswordInput autoComplete="new-password" {...field} />
                 </FormControl>
+                <PasswordRequirements value={field.value} className="mt-1" />
                 <FormMessage />
               </FormItem>
             )}
@@ -147,7 +148,7 @@ export function ResetPasswordPage() {
             name="confirmNewPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirmar Nova Senha</FormLabel>
+                <FormLabel required>Confirmar Nova Senha</FormLabel>
                 <FormControl>
                   <PasswordInput autoComplete="new-password" {...field} />
                 </FormControl>

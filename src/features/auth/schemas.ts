@@ -1,11 +1,8 @@
 // Schemas Zod dos formulários de autenticação — wiki/api/auth.md
 import { z } from 'zod'
+import { strongPasswordSchema } from '@/lib/password'
 
 const emailSchema = z.string().min(1, 'Informe o e-mail.').email('Informe um e-mail válido.')
-
-const passwordMinSchema = z
-  .string()
-  .min(8, 'A senha deve ter no mínimo 8 caracteres.')
 
 // wiki/pages/page_login.md — Email, Senha, "Lembrar-me".
 export const loginSchema = z.object({
@@ -28,7 +25,7 @@ export type RequestVerificationFormValues = z.infer<typeof requestVerificationSc
 export const completeSignupSchema = z
   .object({
     name: z.string().min(2, 'Informe o nome da igreja.'),
-    password: passwordMinSchema,
+    password: strongPasswordSchema,
     confirmPassword: z.string().min(1, 'Confirme a senha.'),
     acceptTerms: z.boolean(),
   })
@@ -53,7 +50,7 @@ export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>
 // wiki/pages/page_forgot_password.md — Passo 3 ("Confirmar Nova Senha" só no front).
 export const resetPasswordSchema = z
   .object({
-    newPassword: passwordMinSchema,
+    newPassword: strongPasswordSchema,
     confirmNewPassword: z.string().min(1, 'Confirme a nova senha.'),
   })
   .refine((data) => data.newPassword === data.confirmNewPassword, {

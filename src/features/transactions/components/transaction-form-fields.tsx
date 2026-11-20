@@ -7,6 +7,7 @@ import type { Control, FieldErrors, UseFormRegister } from 'react-hook-form'
 import { Controller } from 'react-hook-form'
 import { SegmentedControl } from './segmented-control'
 import { MemberPicker, type MemberOption } from './member-picker'
+import { CurrencyInput } from '@/components/currency-input'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -16,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { cn } from '@/lib/utils'
 import type { Category, Ministry, TransactionType } from '@/types'
 import { transactionTypeOptions, type TransactionFormValues } from '../schemas'
 
@@ -50,7 +50,7 @@ export function TransactionFormFields({
   return (
     <>
       <div className="flex flex-col gap-1.5">
-        <Label>Tipo</Label>
+        <Label required>Tipo</Label>
         <Controller
           control={control}
           name="type"
@@ -67,25 +67,32 @@ export function TransactionFormFields({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor={`${idPrefix}-value`}>Valor</Label>
-          <Input
-            id={`${idPrefix}-value`}
-            type="number"
-            step="0.01"
-            min="0.01"
-            inputMode="decimal"
-            className={cn(
-              'text-right font-mono',
-              watchedType === 'income' ? 'text-income' : 'text-expense',
+          <Label htmlFor={`${idPrefix}-value`} required>
+            Valor
+          </Label>
+          <Controller
+            control={control}
+            name="value"
+            render={({ field }) => (
+              <CurrencyInput
+                id={`${idPrefix}-value`}
+                name={field.name}
+                ref={field.ref}
+                value={typeof field.value === 'number' ? field.value : 0}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                className={watchedType === 'income' ? 'text-income' : 'text-expense'}
+                aria-invalid={Boolean(errors.value)}
+              />
             )}
-            aria-invalid={Boolean(errors.value)}
-            {...register('value')}
           />
           {errors.value && <p className="text-xs text-destructive">{errors.value.message}</p>}
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor={`${idPrefix}-date`}>Data</Label>
+          <Label htmlFor={`${idPrefix}-date`} required>
+            Data
+          </Label>
           <Input
             id={`${idPrefix}-date`}
             type="date"
@@ -97,7 +104,9 @@ export function TransactionFormFields({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor={`${idPrefix}-category`}>Categoria</Label>
+        <Label htmlFor={`${idPrefix}-category`} required>
+          Categoria
+        </Label>
         <Controller
           control={control}
           name="categoryId"
@@ -131,17 +140,21 @@ export function TransactionFormFields({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor={`${idPrefix}-description`}>Descrição</Label>
+        <Label htmlFor={`${idPrefix}-description`} optional>
+          Descrição
+        </Label>
         <Input id={`${idPrefix}-description`} {...register('description')} />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label>Membro (opcional)</Label>
+        <Label optional>Membro</Label>
         <MemberPicker value={member} onChange={onMemberChange} />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor={`${idPrefix}-ministry`}>Ministério (opcional)</Label>
+        <Label htmlFor={`${idPrefix}-ministry`} optional>
+          Ministério
+        </Label>
         <Controller
           control={control}
           name="ministryId"
