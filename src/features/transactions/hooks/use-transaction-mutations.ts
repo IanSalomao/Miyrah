@@ -1,19 +1,30 @@
 // Mutations de transação — wiki/api/transactions.md
-// Toda mutation invalida queryKeys.transactions.all (tabela + métricas).
+// Toda mutation invalida queryKeys.transactions.all (tabela + métricas) e
+// queryKeys.dashboard.all (cards e gráficos da Início/Dashboard).
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { ApiError } from '@/lib/api-client'
 import { createTransaction, removeTransaction, updateTransaction } from '@/services'
 import { queryKeys } from '@/lib/query-keys'
-import type { CreateTransactionPayload, UpdateTransactionPayload } from '@/types'
+import type {
+  CreateTransactionPayload,
+  Paginated,
+  Transaction,
+  UpdateTransactionPayload,
+} from '@/types'
+
+function invalidateTransactionViews(queryClient: QueryClient) {
+  return Promise.all([
+    queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.all }),
+  ])
+}
 
 export function useCreateTransaction() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (payload: CreateTransactionPayload) => createTransaction(payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all })
-    },
+    onSuccess: () => invalidateTransactionViews(queryClient),
   })
 }
 
@@ -32,7 +43,7 @@ export function useCreateTransactions() {
     onSuccess: (results) => {
       const hasSuccess = results.some((result) => result.status === 'fulfilled')
       if (hasSuccess) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all })
+        return invalidateTransactionViews(queryClient)
       }
     },
   })
@@ -43,9 +54,7 @@ export function useUpdateTransaction() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateTransactionPayload }) =>
       updateTransaction(id, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all })
-    },
+    onSuccess: () => invalidateTransactionViews(queryClient),
     onError: (error) => {
       // 404: a transação já não existe mais — recarrega a tabela mesmo assim.
       if (error instanceof ApiError && error.code === 'RESOURCE_NOT_FOUND') {
@@ -59,8 +68,15 @@ export function useRemoveTransaction() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => removeTransaction(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.transactions.all })
+    onSuccess: (_data, id) => {
+      // Tira a linha de todas as listagens em cache na hora, sem depender do
+      // refetch; o `return` mantém a mutation pendente (modal em
+      // "Processando…") até as listagens e os totais voltarem atualizados.
+      queryClient.setQueriesData<Paginated<Transaction>>(
+        { queryKey: [...queryKeys.transactions.all, 'list'] },
+        (data) => data && { ...data, items: data.items.filter((item) => item.id !== id) },
+      )
+      return invalidateTransactionViews(queryClient)
     },
     onError: (error) => {
       if (error instanceof ApiError && error.code === 'RESOURCE_NOT_FOUND') {

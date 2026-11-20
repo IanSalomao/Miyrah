@@ -2,6 +2,7 @@
 // (o shape que os hooks/services enviam à API). Ver wiki/api/dashboard.md e
 // wiki/pages/page_dashboard.md.
 
+import { toIsoDate } from '@/lib/format'
 import type { DashboardFilters, DashboardPeriod, DashboardType } from '@/types'
 
 /** Estado controlado pela filter-bar da tela — 1:1 com os controles visuais. */
@@ -43,13 +44,6 @@ export function toDashboardFilters(state: DashboardFilterState): DashboardFilter
 export function isDashboardFiltersReady(filters: DashboardFilters): boolean {
   if (filters.period === 'custom') return Boolean(filters.dateFrom && filters.dateTo)
   return true
-}
-
-function toIsoDate(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
 }
 
 /** Primeiro dia do mês `monthsAgo` meses antes de `today` (0 = mês atual). */
